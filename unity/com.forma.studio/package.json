@@ -1,0 +1,14 @@
+{
+  "name": "com.forma.studio",
+  "version": "0.1.0",
+  "displayName": "Forma Studio",
+  "description": "Runtime support and editor tooling for UI exported from Forma Studio.",
+  "unity": "6000.0",
+  "keywords": ["ui", "ugui", "forma", "prefab"],
+  "author": {
+    "name": "Forma Studio"
+  },
+  "dependencies": {
+    "com.unity.ugui": "2.0.0"
+  }
+}

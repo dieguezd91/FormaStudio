@@ -1,0 +1,14 @@
+{
+  "name": "Forma.Studio.Editor",
+  "rootNamespace": "Forma.Studio.Editor",
+  "references": ["Forma.Studio.Runtime"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -1,0 +1,19 @@
+{
+  "name": "Forma.Studio.Editor.Tests",
+  "rootNamespace": "Forma.Studio.Editor.Tests",
+  "references": [
+    "Forma.Studio.Runtime",
+    "Forma.Studio.Editor",
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": ["nunit.framework.dll"],
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

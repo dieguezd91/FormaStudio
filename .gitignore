@@ -1,0 +1,45 @@
+# Dependencies and build output
+node_modules/
+dist/
+out/
+coverage/
+*.tsbuildinfo
+
+# Local data and secrets
+*.sqlite
+*.sqlite-*
+*.sqlite3
+.env
+.env.*
+!.env.example
+
+# Playwright
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+
+# Unity
+unity/**/[Ll]ibrary/
+unity/**/[Tt]emp/
+unity/**/[Oo]bj/
+unity/**/[Bb]uild/
+unity/**/[Bb]uilds/
+unity/**/[Ll]ogs/
+unity/**/[Uu]serSettings/
+unity/**/MemoryCaptures/
+*.csproj
+*.sln
+*.pidb
+*.booproj
+*.svd
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# Agent tooling
+.atl/

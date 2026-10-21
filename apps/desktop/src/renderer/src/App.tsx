@@ -1,21 +1,62 @@
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import type { Project } from '@/api';
+import { ServiceBanner } from '@/app/ServiceBanner';
+import { useServiceStatus } from '@/app/useServiceStatus';
+import { EditorScreen } from '@/editor/EditorScreen';
+import { editorStore, useUi } from '@/editor/store';
+import { StartScreen, type OpenOptions } from '@/start/StartScreen';
+
+type View = { kind: 'start' } | { kind: 'editor'; projectId: string; projectName: string };
+
+const HASH_PATTERN = /^#\/project\/([^/]+)$/;
+
+/** The open project lives in the URL hash so a page reload lands back in the same editor. */
+function viewFromHash(): View {
+  const match = HASH_PATTERN.exec(window.location.hash);
+  return match?.[1]
+    ? { kind: 'editor', projectId: decodeURIComponent(match[1]), projectName: '' }
+    : { kind: 'start' };
+}
 
 export function App() {
+  const [view, setViewState] = useState<View>(viewFromHash);
+  const setView = (next: View) => {
+    window.location.hash = next.kind === 'editor' ? `/project/${encodeURIComponent(next.projectId)}` : '';
+    setViewState(next);
+  };
+  const { status, recheck } = useServiceStatus();
+  const serviceDown = status === 'down';
+
+  const open = (project: Project, options: OpenOptions) => {
+    const ui = useUi.getState();
+    ui.setMode('design');
+    ui.setExploreTab(options.tab);
+    ui.setAiNotice(options.aiNotice);
+    setView({ kind: 'editor', projectId: project.id, projectName: project.name });
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-8 p-8">
-      <header className="text-center">
-        <h1 className="text-4xl font-semibold tracking-tight">Forma Studio</h1>
-        <p className="mt-2 text-muted-foreground">¿Cómo querés empezar?</p>
-      </header>
-      <div className="flex flex-wrap justify-center gap-4">
-        <Button size="lg">Crear con IA</Button>
-        <Button size="lg" variant="secondary">
-          Usar plantilla
-        </Button>
-        <Button size="lg" variant="outline">
-          Empezar desde cero
-        </Button>
+    <div className="flex h-full flex-col">
+      {serviceDown ? (
+        <ServiceBanner
+          onRetry={() => {
+            void recheck();
+            editorStore.getState().retrySync();
+          }}
+        />
+      ) : null}
+      <div className="min-h-0 flex-1">
+        {view.kind === 'start' ? (
+          <StartScreen serviceUp={!serviceDown} onOpen={open} />
+        ) : (
+          <EditorScreen
+            projectId={view.projectId}
+            projectName={view.projectName}
+            serviceUp={!serviceDown}
+            onExit={() => setView({ kind: 'start' })}
+          />
+        )}
       </div>
-    </main>
+    </div>
   );
 }

@@ -17,12 +17,14 @@
     "dev:service": "npm run dev -w @forma/local-service",
     "build": "npm run build -w @forma/desktop",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "typecheck": "tsc -p tsconfig.json && npm run typecheck --workspaces --if-present",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
     "@types/node": "^24.19.2",
     "eslint": "^10.13.0",
     "eslint-plugin-react-hooks": "^7.1.1",

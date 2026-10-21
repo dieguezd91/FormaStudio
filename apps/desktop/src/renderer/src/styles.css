@@ -1,30 +1,106 @@
 @import 'tailwindcss';
 
+/* Dark neutral theme: the canvas is the brightest thing on screen. */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --border: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  color-scheme: dark;
+  --background: oklch(0.17 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.21 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.23 0 0);
+  --muted: oklch(0.26 0 0);
+  --muted-foreground: oklch(0.72 0 0);
+  --primary: oklch(0.78 0.14 75);
+  --primary-foreground: oklch(0.18 0.02 75);
+  --secondary: oklch(0.28 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
+  --accent: oklch(0.31 0 0);
+  --destructive: oklch(0.66 0.2 25);
+  --success: oklch(0.74 0.15 150);
+  --border: oklch(0.31 0 0);
+  --input: oklch(0.24 0 0);
+  --ring: oklch(0.78 0.14 75);
+  --canvas: oklch(0.13 0 0);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
   --color-border: var(--border);
+  --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-canvas: var(--canvas);
+}
+
+html,
+body,
+#root {
+  height: 100%;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* Canvas nodes: selection outline and name label (counter-scaled so it stays readable). */
+[data-node-id][data-selected='true'] {
+  outline: 2px solid var(--primary);
+  outline-offset: -1px;
+}
+
+.node-label {
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  z-index: 50;
+  transform: scale(var(--inv-zoom, 1));
+  transform-origin: bottom left;
+  white-space: nowrap;
+  pointer-events: none;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font: 600 11px/1 ui-sans-serif, system-ui, sans-serif;
+  padding: 3px 6px;
+  border-radius: 3px 3px 0 0;
+}
+
+.node-lock {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  z-index: 40;
+  transform: scale(var(--inv-zoom, 1));
+  transform-origin: top right;
+  pointer-events: none;
+  background: oklch(0.2 0 0 / 0.85);
+  color: var(--primary);
+  border-radius: 3px;
+  padding: 2px;
+  display: flex;
+}
+
+.moveable-control-box {
+  --moveable-color: oklch(0.78 0.14 75) !important;
 }

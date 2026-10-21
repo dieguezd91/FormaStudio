@@ -31,9 +31,9 @@ UI Toolkit/Web exporters, collaboration, World Space/XR, bidirectional sync of a
 - [x] 2. Design Core: versioned Zod document schema (nodes, styles, behaviors, bindings, mock data)
       and structured operations with undo/redo.
 - [x] 3. Local service: Fastify + SQLite for projects, documents, references, proposals, versions.
-- [ ] 4. Library: inventory family (grid, tabs, equipment) with tabs, drag & drop, stacks,
+- [x] 4. Library: inventory family (grid, tabs, equipment) with tabs, drag & drop, stacks,
       context menu, split behaviors.
-- [ ] 5. Editor: canvas, hierarchy, contextual inspector, undo/redo.
+- [x] 5. Editor: canvas, hierarchy, contextual inspector, undo/redo.
 - [ ] 6. Test mode: behavior runtime with mock data, simulated vs connected clearly marked.
 - [ ] 7. AI (Gemini): requirement extraction with traceability, 3 structurally distinct proposals,
       NL edits as operations with diff preview before applying.
@@ -48,3 +48,5 @@ UI Toolkit/Web exporters, collaboration, World Space/XR, bidirectional sync of a
 - Task 1: commit 5486b55; native review approved (lineage review-4f68b20278584e5c); advisory follow-ups: port 0 accepted in services/local/src/main.ts, silent Electron load failure in apps/desktop/src/main/index.ts, tautological exporter test.
 - Task 2: commit e33e709; 118 tests passing, typecheck + lint clean; native review approved (lineage review-96bee942d789af14); advisory follow-ups: token lookup can hit Object prototype in validate.ts:250, migrate throws on non-record input (migrate.ts:77), vacuous assert in history.test.ts:117.
 - Task 3: commit b75ffa2; 215 tests passing repo-wide (98 in local-service), typecheck + lint clean; real smoke run confirmed project + blob persist across restart, foreign Origin rejected 403, invalid FORMA_PORT exits 1; native review approved (lineage review-bb6334665d984f14). Follow-ups: PATCH proposal accepts status 'adopted' bypassing the adopt route (schemas.ts:136) — restrict to candidate/discarded in task 7; delete-cascade test weak (projects.test.ts:123); hand-rolled CORS instead of @fastify/cors.
+- Task 4: commit 4abbb0a; `@forma/library` with 11 entries (6 basic, 5 inventory variants), insertEntry -> library batch validated for every entry, Spanish search; 353 tests passing, typecheck + lint clean; native review declined by user for this candidate. Notes: binding path convention `items[category=X][i].field` (packages/library/src/bindings.ts) must be honored by runtime (task 6) and exporter (task 8); tab panels overlap until runtime hides inactive tabs; behaviors live on each slot node.
+- Task 5: editor (start screen, canvas with react-moveable, Capas, contextual inspector with tokens, Biblioteca search/insert, Referencias upload, Versiones, optimistic dispatch with 409/422 handling, undo/redo synced); 449 Vitest tests + Playwright e2e (create -> search 'inventario con pestañas' -> insert -> edit fill -> undo -> reload persists) passing; typecheck, lint, build clean; native review declined by user. Gaps: Probar/Exportar placeholders (tasks 6/8), AI disabled (task 7), 1.7 MB renderer chunk.

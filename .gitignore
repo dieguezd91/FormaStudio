@@ -17,6 +17,7 @@ coverage/
 playwright-report/
 test-results/
 blob-report/
+e2e/artifacts/
 playwright/.cache/
 
 # Unity

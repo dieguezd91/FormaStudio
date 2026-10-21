@@ -30,7 +30,7 @@ UI Toolkit/Web exporters, collaboration, World Space/XR, bidirectional sync of a
       `packages/exporters`, `unity/com.forma.studio`; lint/test tooling.
 - [x] 2. Design Core: versioned Zod document schema (nodes, styles, behaviors, bindings, mock data)
       and structured operations with undo/redo.
-- [ ] 3. Local service: Fastify + SQLite for projects, documents, references, proposals, versions.
+- [x] 3. Local service: Fastify + SQLite for projects, documents, references, proposals, versions.
 - [ ] 4. Library: inventory family (grid, tabs, equipment) with tabs, drag & drop, stacks,
       context menu, split behaviors.
 - [ ] 5. Editor: canvas, hierarchy, contextual inspector, undo/redo.
@@ -47,3 +47,4 @@ UI Toolkit/Web exporters, collaboration, World Space/XR, bidirectional sync of a
 
 - Task 1: commit 5486b55; native review approved (lineage review-4f68b20278584e5c); advisory follow-ups: port 0 accepted in services/local/src/main.ts, silent Electron load failure in apps/desktop/src/main/index.ts, tautological exporter test.
 - Task 2: commit e33e709; 118 tests passing, typecheck + lint clean; native review approved (lineage review-96bee942d789af14); advisory follow-ups: token lookup can hit Object prototype in validate.ts:250, migrate throws on non-record input (migrate.ts:77), vacuous assert in history.test.ts:117.
+- Task 3: commit b75ffa2; 215 tests passing repo-wide (98 in local-service), typecheck + lint clean; real smoke run confirmed project + blob persist across restart, foreign Origin rejected 403, invalid FORMA_PORT exits 1; native review approved (lineage review-bb6334665d984f14). Follow-ups: PATCH proposal accepts status 'adopted' bypassing the adopt route (schemas.ts:136) — restrict to candidate/discarded in task 7; delete-cascade test weak (projects.test.ts:123); hand-rolled CORS instead of @fastify/cors.

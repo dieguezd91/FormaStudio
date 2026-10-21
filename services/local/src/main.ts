@@ -1,21 +1,31 @@
+import { HOST, parsePort, resolveDataDir } from './config';
 import { buildServer } from './server';
 
-const HOST = '127.0.0.1';
-const DEFAULT_PORT = 4318;
-
-function resolvePort(raw: string | undefined): number {
-  if (raw === undefined || raw === '') return DEFAULT_PORT;
-  const port = Number(raw);
-  if (!Number.isInteger(port) || port < 0 || port > 65535) {
-    throw new Error(`Invalid FORMA_PORT: ${raw}`);
-  }
-  return port;
+function fail(message: string): never {
+  console.error(message);
+  process.exit(1);
 }
 
-const app = buildServer({ logger: true });
+let port: number;
+try {
+  port = parsePort(process.env.FORMA_PORT);
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
+}
+
+const app = buildServer({ dataDir: resolveDataDir(), logger: true });
+
+for (const signal of ['SIGINT', 'SIGTERM'] as const) {
+  process.once(signal, () => {
+    app.close().then(
+      () => process.exit(0),
+      () => process.exit(1),
+    );
+  });
+}
 
 try {
-  await app.listen({ host: HOST, port: resolvePort(process.env.FORMA_PORT) });
+  await app.listen({ host: HOST, port });
 } catch (error) {
   app.log.error(error);
   process.exit(1);

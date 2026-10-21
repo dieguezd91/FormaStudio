@@ -1,2 +1,10 @@
-/** Version of the persisted design document schema. */
-export const SCHEMA_VERSION = 1;
+export * from './describe';
+export * from './factory';
+export * from './history';
+export * from './ids';
+export * from './issues';
+export * from './migrate';
+export * from './operations';
+export * from './result';
+export * from './schema';
+export * from './validate';

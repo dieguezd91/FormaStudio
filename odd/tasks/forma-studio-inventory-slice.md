@@ -44,3 +44,5 @@ UI Toolkit/Web exporters, collaboration, World Space/XR, bidirectional sync of a
 ## Evidence
 
 (commit ids and check results per task)
+
+- Task 1: commit 5486b55; native review approved (lineage review-4f68b20278584e5c); advisory follow-ups: port 0 accepted in services/local/src/main.ts, silent Electron load failure in apps/desktop/src/main/index.ts, tautological exporter test.

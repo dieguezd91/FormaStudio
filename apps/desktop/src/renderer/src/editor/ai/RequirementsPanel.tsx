@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Loader2, ScanSearch, X } from 'lucide-react';
 import type { AiWarning, Requirement, RequirementStatus, SourceMeta } from '@/api/types';
+import { useAiGate } from '@/app/useAiGate';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tooltip } from '@/components/ui/tooltip';
 import { AiUnavailable, WarningList } from './AiUnavailable';
 import { countByStatus, groupRequirements, STATUS_LABEL } from './logic';
 import { aiStore, useAi } from './store';
@@ -78,7 +80,8 @@ export function RequirementsPanel() {
   const warnings = useAi((state) => state.requirementWarnings);
   const busy = useAi((state) => state.requirementsBusy);
   const error = useAi((state) => state.requirementsError);
-  const unavailable = useAi((state) => state.availability === 'unavailable');
+  const gate = useAiGate();
+  const unavailable = !gate.usable;
   // Only what the user toggled is stored; everything else follows the default (project-wide sources).
   const [overrides, setOverrides] = useState<Record<string, boolean>>({});
 
@@ -119,14 +122,16 @@ export function RequirementsPanel() {
       )}
 
       <div className="flex items-center gap-2">
-        <Button
-          size="sm"
-          disabled={busy || chosen.length === 0}
-          onClick={() => void aiStore.getState().analyze(chosen.map((source) => source.id))}
-        >
-          {busy ? <Loader2 size={14} className="animate-spin" /> : <ScanSearch size={14} />}
-          {busy ? 'Analizando…' : 'Analizar documentación'}
-        </Button>
+        <Tooltip label={gate.reason ?? 'Analizar documentación'} wrap={!gate.usable}>
+          <Button
+            size="sm"
+            disabled={!gate.usable || busy || chosen.length === 0}
+            onClick={() => void aiStore.getState().analyze(chosen.map((source) => source.id))}
+          >
+            {busy ? <Loader2 size={14} className="animate-spin" /> : <ScanSearch size={14} />}
+            {busy ? 'Analizando…' : 'Analizar documentación'}
+          </Button>
+        </Tooltip>
         {busy ? (
           <Button variant="ghost" size="sm" onClick={() => aiStore.getState().cancelGeneration()}>
             <X size={14} /> Cancelar

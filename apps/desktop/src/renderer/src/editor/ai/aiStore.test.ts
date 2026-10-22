@@ -5,6 +5,7 @@ import type { EditPreview, ImpactReport, ProposalMeta, StoredDocument } from '@/
 import { makeBatch } from '../batches';
 import { createEditorStore, type EditorApi } from '../session';
 import { emptyDoc, inventoryDoc, ROOT_ID, SCREEN_ID } from '../testing';
+import { createAiAvailabilityStore } from '@/app/aiAvailabilityStore';
 import { createAiStore, impactOf, type AiApi } from './aiStore';
 
 function setup(initial: FormaDocument = emptyDoc()) {
@@ -52,8 +53,9 @@ function setup(initial: FormaDocument = emptyDoc()) {
     getImpact: vi.fn(async (): Promise<ImpactReport> => ({ since: null, impacts: [] })),
   } satisfies AiApi;
   const editor = createEditorStore(editorApi);
-  const ai = createAiStore(api, editor);
-  return { server, calls, api, editor, ai, proposal };
+  const availability = createAiAvailabilityStore({ getAiStatus: vi.fn() });
+  const ai = createAiStore(api, editor, availability);
+  return { server, calls, api, editor, ai, availability, proposal };
 }
 
 const renameBatch = (name: string): OperationBatch => ({
@@ -80,7 +82,7 @@ async function ready() {
 
 describe('analyze', () => {
   it('stores the requirements and warnings of a successful run', async () => {
-    const { ai, api } = await ready();
+    const { ai, api, availability } = await ready();
     api.extractRequirements.mockResolvedValue({
       requirements: [{ id: 'r1', text: 'Ver objetos', kind: 'goal', status: 'confirmed', sourceRefs: [] }],
       warnings: [{ code: 'sourceSkipped', message: 'Se omitió x' }],
@@ -91,11 +93,11 @@ describe('analyze', () => {
     expect(ai.getState().requirements.map((r) => r.id)).toEqual(['r1']);
     expect(ai.getState().requirementWarnings).toHaveLength(1);
     expect(ai.getState().requirementsBusy).toBe(false);
-    expect(ai.getState().availability).toBe('available');
+    expect(availability.getState().availability).toBe('available');
   });
 
   it('marks AI unavailable with the env var explanation and leaves manual state untouched', async () => {
-    const { ai, api, editor } = await ready();
+    const { ai, api, editor, availability } = await ready();
     api.extractRequirements.mockRejectedValue(
       new ApiError({
         kind: 'aiUnavailable',
@@ -105,8 +107,26 @@ describe('analyze', () => {
       }),
     );
     await ai.getState().analyze(['s1']);
-    expect(ai.getState().availability).toBe('unavailable');
+    expect(availability.getState().availability).toBe('missingKey');
     expect(ai.getState().requirementsError).toContain('GOOGLE_GENERATIVE_AI_API_KEY');
+    expect(editor.getState().status).toBe('ready');
+  });
+
+  it('records a quota failure as a transient issue, shows its message and releases the busy flag', async () => {
+    const { ai, api, availability, editor } = await ready();
+    api.generateProposals.mockRejectedValue(
+      new ApiError({
+        kind: 'aiQuota',
+        status: 429,
+        code: 'aiQuotaExceeded',
+        message: 'Se agotó la cuota. podés volver a intentar en ~18 h',
+        details: { retryAfterSeconds: 64_800 },
+      }),
+    );
+    await ai.getState().generate({ count: 3 });
+    expect(ai.getState().proposalsError).toContain('~18 h');
+    expect(ai.getState().proposalsBusy).toBe(false);
+    expect(availability.getState().transient).toMatchObject({ kind: 'quota', retryAfterSeconds: 64_800 });
     expect(editor.getState().status).toBe('ready');
   });
 

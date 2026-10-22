@@ -1,6 +1,7 @@
 import type { OperationBatch } from '@forma/design-core';
 import { abortedError, errorFromResponse, serviceUnavailableError } from './errors';
 import type {
+  AiStatus,
   EditPreview,
   EditRequest,
   ExportAnalysis,
@@ -166,6 +167,7 @@ export function createApiClient(options: ApiClientOptions = {}) {
     listExports: async (id: string): Promise<ExportRecord[]> =>
       (await request<{ exports: ExportRecord[] }>('GET', `${project(id)}/exports`)).exports,
 
+    getAiStatus: () => request<AiStatus>('GET', '/ai/status'),
     extractRequirements: (id: string, sourceIds?: string[], signal?: AbortSignal) =>
       request<RequirementsResult>(
         'POST',

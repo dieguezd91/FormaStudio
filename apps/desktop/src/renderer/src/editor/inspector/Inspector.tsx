@@ -1,6 +1,5 @@
-import { Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useActiveScreen, useEditor, useUi } from '../store';
+import { AskAiButton } from '../ai/AskAiButton';
+import { useActiveScreen, useEditor } from '../store';
 import { NodeInspector } from './NodeInspector';
 import { ScreenInspector } from './ScreenInspector';
 
@@ -28,9 +27,7 @@ export function Inspector() {
           <p className="text-xs text-muted-foreground">
             Arrastrá en el canvas para moverlos juntos, duplicalos con Ctrl+D o eliminalos con Supr.
           </p>
-          <Button variant="secondary" size="sm" onClick={() => useUi.getState().setAskOpen(true)}>
-            <Sparkles size={14} /> Pedir a la IA
-          </Button>
+          <AskAiButton />
         </div>
       ) : (
         <ScreenInspector doc={doc} screen={screen} />

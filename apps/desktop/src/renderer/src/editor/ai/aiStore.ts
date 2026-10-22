@@ -1,7 +1,7 @@
 import type { FormaDocument } from '@forma/design-core';
 import { createStore, type StoreApi } from 'zustand/vanilla';
 import type { ApiClient } from '@/api/client';
-import { isAborted, isAiUnavailable } from '@/api/errors';
+import { isAborted } from '@/api/errors';
 import type {
   AiWarning,
   EditPreview,
@@ -13,6 +13,7 @@ import type {
   SourceImpact,
   SourceMeta,
 } from '@/api/types';
+import type { AiAvailabilityState } from '@/app/aiAvailabilityStore';
 import { messageOf, type EditorState } from '../session';
 import { isPreviewStale, summarizeImpact, type ImpactSummary } from './logic';
 
@@ -31,9 +32,6 @@ export type AiApi = Pick<
   | 'getImpact'
 >;
 
-/** `unknown` until an AI route answers; the service has no "is AI configured" probe. */
-export type Availability = 'unknown' | 'available' | 'unavailable';
-
 export type EditState =
   | { phase: 'idle' }
   | { phase: 'loading'; request: EditRequest }
@@ -42,7 +40,6 @@ export type EditState =
 
 export interface AiState {
   projectId: string | null;
-  availability: Availability;
 
   sources: SourceMeta[];
   sourcesError: string | null;
@@ -87,7 +84,6 @@ export interface AiState {
 
 const initial = {
   projectId: null,
-  availability: 'unknown' as Availability,
   sources: [] as SourceMeta[],
   sourcesError: null,
   requirements: [] as Requirement[],
@@ -109,7 +105,11 @@ export const impactOf = (state: Pick<AiState, 'impacts'>): ImpactSummary | null 
 /** Local edits not yet saved would be missing from what the service sees. */
 const UNSAVED_MESSAGE = 'Hay cambios sin guardar; esperá a que se sincronicen e intentá de nuevo.';
 
-export function createAiStore(api: AiApi, editor: StoreApi<EditorState>): StoreApi<AiState> {
+export function createAiStore(
+  api: AiApi,
+  editor: StoreApi<EditorState>,
+  availability: StoreApi<AiAvailabilityState>,
+): StoreApi<AiState> {
   let requirementsController: AbortController | null = null;
   let proposalsController: AbortController | null = null;
   let editController: AbortController | null = null;
@@ -122,7 +122,7 @@ export function createAiStore(api: AiApi, editor: StoreApi<EditorState>): StoreA
     /** Records AI availability from a failure; returns the message to show, or null when cancelled. */
     const failure = (error: unknown): string | null => {
       if (isAborted(error)) return null;
-      if (isAiUnavailable(error)) set({ availability: 'unavailable' });
+      availability.getState().reportError(error);
       return messageOf(error);
     };
 
@@ -200,7 +200,8 @@ export function createAiStore(api: AiApi, editor: StoreApi<EditorState>): StoreA
           if (!(await synced())) throw new Error(UNSAVED_MESSAGE);
           const result = await api.extractRequirements(projectId, sourceIds, controller.signal);
           if (!current(projectId)) return;
-          set({ requirements: result.requirements, requirementWarnings: result.warnings, availability: 'available' });
+          set({ requirements: result.requirements, requirementWarnings: result.warnings });
+          availability.getState().reportSuccess();
         } catch (error) {
           const message = failure(error);
           if (current(projectId) && message) set({ requirementsError: message });
@@ -219,7 +220,8 @@ export function createAiStore(api: AiApi, editor: StoreApi<EditorState>): StoreA
         try {
           const result = await api.generateProposals(projectId, request, controller.signal);
           if (!current(projectId)) return;
-          set({ proposalWarnings: result.warnings, availability: 'available' });
+          set({ proposalWarnings: result.warnings });
+          availability.getState().reportSuccess();
           await refreshProposals(projectId);
         } catch (error) {
           const message = failure(error);
@@ -335,7 +337,8 @@ export function createAiStore(api: AiApi, editor: StoreApi<EditorState>): StoreA
         if (!(await synced())) throw new Error(UNSAVED_MESSAGE);
         const preview = await api.previewEdit(projectId, request, controller.signal);
         if (!current(projectId) || controller.signal.aborted) return;
-        set({ availability: 'available', edit: { phase: 'preview', request, preview, refreshed } });
+        availability.getState().reportSuccess();
+        set({ edit: { phase: 'preview', request, preview, refreshed } });
       } catch (error) {
         const message = failure(error);
         // A newer request owns the edit state now.

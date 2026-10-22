@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Project } from '@/api';
 import { ServiceBanner } from '@/app/ServiceBanner';
+import { retryAiStatus } from '@/app/useAiGate';
 import { useServiceStatus } from '@/app/useServiceStatus';
 import { EditorScreen } from '@/editor/EditorScreen';
 import { editorStore, useUi } from '@/editor/store';
@@ -26,6 +27,11 @@ export function App() {
   };
   const { status, recheck } = useServiceStatus();
   const serviceDown = status === 'down';
+
+  // AI availability on start, and again whenever the service comes back; it never gates anything else.
+  useEffect(() => {
+    if (!serviceDown) void retryAiStatus();
+  }, [serviceDown]);
 
   const open = (project: Project, options: OpenOptions) => {
     const ui = useUi.getState();

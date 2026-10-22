@@ -69,6 +69,14 @@ describe('api client', () => {
 });
 
 describe('api client · AI', () => {
+  it('reads the model-free AI status', async () => {
+    const answer = { enabled: true, configured: false, provider: 'gemini', model: 'm', visionModel: 'm', reason: 'missingKey' };
+    const fetch = vi.fn(async () => json(200, answer));
+    const client = createApiClient({ baseUrl: 'http://x:1', fetch });
+    await expect(client.getAiStatus()).resolves.toEqual(answer);
+    expect(fetch).toHaveBeenCalledWith('http://x:1/ai/status', { method: 'GET' });
+  });
+
   it('maps the 503 aiUnavailable envelope to a typed error naming the env var', async () => {
     const client = createApiClient({
       fetch: async () => json(503, { error: { code: 'aiUnavailable', message: 'missing key' } }),

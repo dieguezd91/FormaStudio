@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import { CircleOff } from 'lucide-react';
-import { AI_UNAVAILABLE_MESSAGE } from '@/api/errors';
-import { useAi } from './store';
+import { AiEnableDialog } from '@/app/AiEnableDialog';
+import { retryAiStatus, useAiGate } from '@/app/useAiGate';
 
-/** Shown wherever an AI result would be, once the service said the Gemini key is missing. */
+/** Shown wherever an AI result would be, while AI cannot be used. Manual work is never blocked. */
 export function AiUnavailable() {
-  const unavailable = useAi((state) => state.availability === 'unavailable');
-  if (!unavailable) return null;
+  const gate = useAiGate();
+  const [helpOpen, setHelpOpen] = useState(false);
+  if (gate.usable) return null;
   return (
     <div
       role="alert"
@@ -13,7 +15,20 @@ export function AiUnavailable() {
       className="flex items-start gap-2 rounded-lg border border-border bg-muted/40 p-2.5 text-xs"
     >
       <CircleOff size={14} className="mt-0.5 shrink-0 text-muted-foreground" />
-      <p>{AI_UNAVAILABLE_MESSAGE}</p>
+      <div className="space-y-1">
+        <p>{gate.detail}</p>
+        <p className="flex gap-3">
+          {gate.state !== 'unknown' ? (
+            <button type="button" className="text-primary underline-offset-2 hover:underline" onClick={() => setHelpOpen(true)}>
+              Cómo habilitarla
+            </button>
+          ) : null}
+          <button type="button" className="text-primary underline-offset-2 hover:underline" onClick={() => void retryAiStatus()}>
+            Reintentar
+          </button>
+        </p>
+      </div>
+      <AiEnableDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
   );
 }

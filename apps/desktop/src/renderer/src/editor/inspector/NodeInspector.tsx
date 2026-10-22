@@ -1,13 +1,14 @@
-import { Copy, Lock, LockOpen, Sparkles, Trash2 } from 'lucide-react';
+import { Copy, Lock, LockOpen, Trash2 } from 'lucide-react';
 import type { FormaDocument, FormaNode, FormaScreen, NodePatch } from '@forma/design-core';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/input';
 import { Tooltip } from '@/components/ui/tooltip';
+import { AskAiButton } from '../ai/AskAiButton';
 import { actionLabelBatch, stackBatch, summarizeBehavior } from '../behaviors';
 import { updateNodeBatch } from '../batches';
 import { NODE_TYPE_LABELS } from '../canvas/nodeStyle';
-import { editorStore, useUi } from '../store';
+import { editorStore } from '../store';
 import { CommitInput, Field, NumberInput, Section } from './fields';
 import { StyleField, type StyleInput } from './StyleField';
 
@@ -315,9 +316,7 @@ export function NodeInspector({
       </div>
 
       <div className="flex flex-wrap gap-1.5 border-b border-border px-3 py-2">
-        <Button variant="secondary" size="sm" aria-label="Pedir a la IA" onClick={() => useUi.getState().setAskOpen(true)}>
-          <Sparkles size={14} /> Pedir a la IA
-        </Button>
+        <AskAiButton ariaLabel="Pedir a la IA" />
         {!isRoot ? (
           <>
             <Tooltip label="Duplicar (Ctrl+D)">

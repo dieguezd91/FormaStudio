@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Columns2, Loader2, Play, Sparkles, Undo2, X } from 'lucide-react';
 import type { ProposalMeta, ProposalStatus } from '@/api/types';
+import { useAiGate } from '@/app/useAiGate';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Input, Select, Textarea } from '@/components/ui/input';
+import { Tooltip } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useEditor } from '../store';
 import { AiUnavailable, WarningList } from './AiUnavailable';
@@ -172,7 +174,8 @@ export function ProposalsPanel() {
   const proposals = useAi((state) => state.proposals);
   const busy = useAi((state) => state.proposalsBusy);
   const error = useAi((state) => state.proposalsError);
-  const unavailable = useAi((state) => state.availability === 'unavailable');
+  const gate = useAiGate();
+  const unavailable = !gate.usable;
   const warnings = useAi((state) => state.proposalWarnings).filter((w) => w.proposalId === undefined);
 
   const [brief, setBrief] = useState('');
@@ -243,10 +246,12 @@ export function ProposalsPanel() {
           </Select>
         </label>
         <div className="flex items-center gap-2">
-          <Button type="submit" size="sm" disabled={busy}>
-            {busy ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-            {busy ? 'Generando…' : 'Generar propuestas'}
-          </Button>
+          <Tooltip label={gate.reason ?? 'Generar propuestas'} wrap={!gate.usable}>
+            <Button type="submit" size="sm" disabled={!gate.usable || busy}>
+              {busy ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+              {busy ? 'Generando…' : 'Generar propuestas'}
+            </Button>
+          </Tooltip>
           {busy ? (
             <Button type="button" variant="ghost" size="sm" onClick={() => aiStore.getState().cancelGeneration()}>
               <X size={14} /> Cancelar

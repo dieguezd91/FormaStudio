@@ -13,6 +13,19 @@ export interface StoredDocument {
   revision: number;
 }
 
+/** `GET /ai/status`: model-free, so the UI can decide whether to offer AI at all. */
+export interface AiStatus {
+  /** The kill switch (FORMA_AI_ENABLED). */
+  enabled: boolean;
+  /** A Gemini key is present. */
+  configured: boolean;
+  provider: string;
+  model: string;
+  visionModel: string;
+  /** Why AI is not usable; `disabled` wins over `missingKey`. */
+  reason?: 'disabled' | 'missingKey';
+}
+
 export type SourceKind = 'document' | 'reference';
 export type SourceScopeLevel = 'project' | 'screen' | 'node';
 export type SourceIntent = 'structure' | 'interaction' | 'hierarchy' | 'visual-style' | 'inspiration';

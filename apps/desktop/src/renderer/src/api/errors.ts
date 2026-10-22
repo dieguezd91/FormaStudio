@@ -1,3 +1,14 @@
+import {
+  AI_AUTH_FAILED_MESSAGE,
+  AI_DISABLED_MESSAGE,
+  AI_PROVIDER_ERROR_MESSAGE,
+  AI_REQUEST_REJECTED_MESSAGE,
+  AI_TIMEOUT_MESSAGE,
+  AI_UNAVAILABLE_MESSAGE,
+  overloadedMessage,
+  quotaMessage,
+} from './aiMessages';
+
 export type ApiErrorKind =
   /** The service could not be reached at all. */
   | 'unavailable'
@@ -11,7 +22,15 @@ export type ApiErrorKind =
   | 'forbidden'
   /** 503 from an AI route: no Gemini key is configured. Manual work is unaffected. */
   | 'aiUnavailable'
-  /** 502 from an AI route: the provider failed or its output did not validate. */
+  /** 503 from an AI route: the kill switch (FORMA_AI_ENABLED=false) is on. */
+  | 'aiDisabled'
+  /** 429 from an AI route: the Gemini quota is exhausted; `details.retryAfterSeconds` may say when. */
+  | 'aiQuota'
+  /** 503 from an AI route: the model is overloaded right now. */
+  | 'aiOverloaded'
+  /** 504 from an AI route: Gemini took too long. */
+  | 'aiTimeout'
+  /** 502 from an AI route: the provider failed, refused the request or its output did not validate. */
   | 'aiFailed'
   /** The caller cancelled the request. */
   | 'aborted'
@@ -69,12 +88,6 @@ export function abortedError(): ApiError {
   return new ApiError({ kind: 'aborted', status: 0, code: 'aborted', message: 'Solicitud cancelada.' });
 }
 
-export const AI_ENV_VAR = 'GOOGLE_GENERATIVE_AI_API_KEY';
-
-export const AI_UNAVAILABLE_MESSAGE =
-  `Las funciones de IA están desactivadas porque falta la clave de Gemini. Definí la variable de entorno ${AI_ENV_VAR} ` +
-  '(podés copiar .env.example a .env) y reiniciá el servicio local. El trabajo manual no se ve afectado.';
-
 const OPERATION_MESSAGES: Record<string, string> = {
   screenNotFound: 'la pantalla ya no existe',
   nodeNotFound: 'el elemento ya no existe',
@@ -92,6 +105,33 @@ const OPERATION_MESSAGES: Record<string, string> = {
 export const operationReason = (code: string, fallback: string): string =>
   OPERATION_MESSAGES[code] ?? fallback;
 
+/** Kind and Spanish message of the AI route errors the service classifies (see docs/ai.md). */
+function aiErrorFromCode(
+  code: string,
+  details: Record<string, unknown> | undefined,
+): { kind: ApiErrorKind; message: string } | undefined {
+  switch (code) {
+    case 'aiUnavailable':
+      return { kind: 'aiUnavailable', message: AI_UNAVAILABLE_MESSAGE };
+    case 'aiDisabled':
+      return { kind: 'aiDisabled', message: AI_DISABLED_MESSAGE };
+    case 'aiQuotaExceeded':
+      return { kind: 'aiQuota', message: quotaMessage(details) };
+    case 'aiOverloaded':
+      return { kind: 'aiOverloaded', message: overloadedMessage(details) };
+    case 'aiTimeout':
+      return { kind: 'aiTimeout', message: AI_TIMEOUT_MESSAGE };
+    case 'aiAuthFailed':
+      return { kind: 'aiFailed', message: AI_AUTH_FAILED_MESSAGE };
+    case 'aiRequestRejected':
+      return { kind: 'aiFailed', message: AI_REQUEST_REJECTED_MESSAGE };
+    case 'aiProviderError':
+      return { kind: 'aiFailed', message: AI_PROVIDER_ERROR_MESSAGE };
+    default:
+      return undefined;
+  }
+}
+
 /** Maps the service error envelope onto a typed error with a Spanish message. */
 export function errorFromResponse(
   status: number,
@@ -106,8 +146,9 @@ export function errorFromResponse(
   const details = envelope?.details as Record<string, unknown> | undefined;
   const base = { status, code, ...(serverMessage ? { serverMessage } : {}), ...(details ? { details } : {}) };
 
-  if (options.ai && status === 503 && code === 'aiUnavailable') {
-    return new ApiError({ ...base, kind: 'aiUnavailable', message: AI_UNAVAILABLE_MESSAGE });
+  if (options.ai) {
+    const ai = aiErrorFromCode(code, details);
+    if (ai) return new ApiError({ ...base, ...ai });
   }
   if (options.ai && status === 502) {
     return new ApiError({

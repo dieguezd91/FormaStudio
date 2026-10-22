@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { FolderOpen, LayoutTemplate, PencilRuler, Sparkles } from 'lucide-react';
 import { api, isApiError, type Project } from '@/api';
+import { AiEnableDialog } from '@/app/AiEnableDialog';
+import { retryAiStatus, useAiGate } from '@/app/useAiGate';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -42,6 +44,9 @@ const INTENTS: Record<
 };
 
 const ORDER: StartIntent[] = ['ai', 'template', 'scratch'];
+/** Without AI the other two entries lead and the AI card steps back. */
+const ORDER_WITHOUT_AI: StartIntent[] = ['template', 'scratch', 'ai'];
+const VARIANT_WITHOUT_AI: Partial<Record<StartIntent, 'default' | 'secondary'>> = { template: 'default', scratch: 'secondary' };
 const DEFAULT_NAME = 'Nuevo proyecto';
 
 interface StartScreenProps {
@@ -56,6 +61,8 @@ export function StartScreen({ serviceUp, onOpen }: StartScreenProps) {
   const [name, setName] = useState(DEFAULT_NAME);
   const [busy, setBusy] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const gate = useAiGate();
 
   useEffect(() => {
     if (!serviceUp) return;
@@ -108,8 +115,33 @@ export function StartScreen({ serviceUp, onOpen }: StartScreenProps) {
       </header>
 
       <section aria-label="Cómo empezar" className="grid gap-4 sm:grid-cols-3">
-        {ORDER.map((key) => {
-          const { title, body, icon: Icon, variant } = INTENTS[key];
+        {(gate.usable ? ORDER : ORDER_WITHOUT_AI).map((key) => {
+          const { title, body, icon: Icon, variant: baseVariant } = INTENTS[key];
+          const variant = (!gate.usable && VARIANT_WITHOUT_AI[key]) || baseVariant;
+          if (key === 'ai' && !gate.usable) {
+            return (
+              <div
+                key={key}
+                data-testid="ai-unavailable-card"
+                className="flex flex-col items-start gap-2 rounded-lg border border-dashed border-border bg-muted/30 p-5 text-left"
+              >
+                <span className="flex items-center gap-2 text-base font-semibold text-muted-foreground">
+                  <Icon size={18} /> Crear con IA (no disponible)
+                </span>
+                <span className="text-[13px] text-muted-foreground">{gate.summary}</span>
+                <span className="flex gap-3 text-[13px]">
+                  {gate.state !== 'unknown' ? (
+                    <button type="button" className="text-primary underline-offset-2 hover:underline" onClick={() => setHelpOpen(true)}>
+                      Cómo habilitarla
+                    </button>
+                  ) : null}
+                  <button type="button" className="text-primary underline-offset-2 hover:underline" onClick={() => void retryAiStatus()}>
+                    Reintentar
+                  </button>
+                </span>
+              </div>
+            );
+          }
           return (
             <Button
               key={key}
@@ -153,6 +185,8 @@ export function StartScreen({ serviceUp, onOpen }: StartScreenProps) {
           ))}
         </ul>
       </section>
+
+      <AiEnableDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
 
       <Dialog
         open={intent !== null}

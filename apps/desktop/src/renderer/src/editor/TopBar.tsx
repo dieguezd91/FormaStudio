@@ -1,4 +1,5 @@
 import { ArrowLeft, CircleCheck, CloudOff, Loader2, Plus, Redo2, Sparkles, Undo2 } from 'lucide-react';
+import { useAiGate } from '@/app/useAiGate';
 import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/input';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -71,6 +72,7 @@ export function TopBar({ onExit }: { onExit: () => void }) {
   const setMode = useUi((state) => state.setMode);
   const askOpen = useUi((state) => state.askOpen);
   const setAskOpen = useUi((state) => state.setAskOpen);
+  const gate = useAiGate();
 
   return (
     <header className="flex h-12 shrink-0 items-center gap-3 border-b border-border bg-card px-3">
@@ -141,13 +143,17 @@ export function TopBar({ onExit }: { onExit: () => void }) {
 
       <UndoRedo />
       <VersionsMenu />
-      <Tooltip label={mode === 'design' ? 'Pedir un cambio a la IA' : 'Volvé a Diseñar para pedir cambios'}>
+      <Tooltip
+        label={gate.reason ?? (mode === 'design' ? 'Pedir un cambio a la IA' : 'Volvé a Diseñar para pedir cambios')}
+        align="end"
+        wrap={!gate.usable}
+      >
         <Button
           variant="secondary"
           size="sm"
           data-testid="ask-ai-trigger"
           aria-pressed={askOpen}
-          disabled={mode !== 'design'}
+          disabled={mode !== 'design' || !gate.usable}
           onClick={() => setAskOpen(!askOpen)}
         >
           <Sparkles size={14} /> Pedir a la IA

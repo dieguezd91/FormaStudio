@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Loader2, Sparkles, X } from 'lucide-react';
+import { useAiGate } from '@/app/useAiGate';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/input';
 import { useEditor, useUi } from '../store';
@@ -66,7 +67,8 @@ export function AskAiPanel() {
   const selection = useEditor((state) => state.selection);
   const proposals = useAi((state) => state.proposals).filter((p) => p.status !== 'discarded');
   const edit = useAi((state) => state.edit);
-  const unavailable = useAi((state) => state.availability === 'unavailable');
+  const gate = useAiGate();
+  const unavailable = !gate.usable;
   const [instruction, setInstruction] = useState('');
   const [combine, setCombine] = useState<string[]>([]);
 
@@ -93,7 +95,7 @@ export function AskAiPanel() {
         className="space-y-2"
         onSubmit={(event) => {
           event.preventDefault();
-          if (instruction.trim() === '' || loading) return;
+          if (instruction.trim() === '' || loading || !gate.usable) return;
           void aiStore.getState().requestEdit(instruction.trim(), combine);
         }}
       >
@@ -125,7 +127,7 @@ export function AskAiPanel() {
           </fieldset>
         ) : null}
         <div className="flex items-center gap-2">
-          <Button type="submit" size="sm" disabled={loading || instruction.trim() === ''}>
+          <Button type="submit" size="sm" disabled={!gate.usable || loading || instruction.trim() === ''}>
             {loading ? <Loader2 size={14} className="animate-spin" /> : null}
             {loading ? 'Pensando…' : hasPreview ? 'Pedir de nuevo' : 'Ver cambios'}
           </Button>

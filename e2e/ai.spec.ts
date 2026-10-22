@@ -1,3 +1,6 @@
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { expect, test, type APIRequestContext, type Page, type Request } from '@playwright/test';
 import {
   applyBatch,
@@ -45,6 +48,48 @@ async function stubPost(page: Page, suffix: string, respond: (request: Request) 
       body: JSON.stringify(body),
     });
   });
+}
+
+const AVAILABLE = { enabled: true, configured: true };
+
+/**
+ * Answers `GET /ai/status` (and its preflight). The real service has no Gemini key here, so every test
+ * stubs the status; a later call in the same test wins over an earlier one.
+ */
+async function stubAiStatus(page: Page, status: { enabled: boolean; configured: boolean }) {
+  await page.route(/\/ai\/status$/, async (route) => {
+    const request = route.request();
+    if (request.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+    return route.fulfill({
+      status: 200,
+      headers: { ...CORS, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        ...status,
+        provider: 'google',
+        model: 'gemini-test',
+        visionModel: 'gemini-test',
+        ...(status.enabled ? (status.configured ? {} : { reason: 'missingKey' }) : { reason: 'disabled' }),
+      }),
+    });
+  });
+}
+
+test.beforeEach(async ({ page }) => {
+  await stubAiStatus(page, AVAILABLE);
+});
+
+/** A just-big-enough Unity project, so the export analysis has a folder to read. */
+function makeFakeUnityProject(): string {
+  const root = mkdtempSync(join(tmpdir(), 'forma-e2e-ai-unity-'));
+  mkdirSync(join(root, 'Assets'));
+  mkdirSync(join(root, 'ProjectSettings'));
+  mkdirSync(join(root, 'Packages'));
+  writeFileSync(join(root, 'ProjectSettings', 'ProjectVersion.txt'), 'm_EditorVersion: 6000.0.73f1\n');
+  writeFileSync(
+    join(root, 'Packages', 'manifest.json'),
+    `${JSON.stringify({ dependencies: { 'com.unity.ugui': '2.0.0' } }, null, 2)}\n`,
+  );
+  return root;
 }
 
 const aiUnavailable = (): Stubbed => ({
@@ -343,11 +388,12 @@ test('sin clave de Gemini la IA se explica y el trabajo manual sigue funcionando
   await expect(unavailable).toContainText('trabajo manual');
   await expect(page.getByTestId('guide-ai-note')).toContainText('falta la clave de Gemini');
 
-  await page.getByTestId('ask-ai-trigger').click();
-  await page.getByTestId('ask-ai').getByLabel('Qué querés cambiar').fill('Agregá un botón');
-  await page.getByTestId('ask-ai').getByRole('button', { name: 'Ver cambios' }).click();
-  await expect(page.getByTestId('ask-ai').getByTestId('ai-unavailable')).toContainText('GOOGLE_GENERATIVE_AI_API_KEY');
-  await page.getByTestId('ask-ai').getByRole('button', { name: 'Cerrar' }).click();
+  // Once the service said the key is missing, the other AI entry points close too.
+  await expect(page.getByTestId('ask-ai-trigger')).toBeDisabled();
+  await expect(page.getByTestId('ask-ai-trigger').locator('xpath=..').getByRole('tooltip', { includeHidden: true })).toContainText(
+    'GOOGLE_GENERATIVE_AI_API_KEY',
+  );
+  await expect(page.getByRole('button', { name: 'Analizar documentación' })).toBeDisabled();
 
   // Manual editing is untouched.
   await page.getByRole('tab', { name: 'Biblioteca' }).click();
@@ -445,4 +491,80 @@ test('al borrar una fuente avisa qué podría verse afectado, sin regenerar nada
   await expect(page.getByTestId('source-row')).toHaveCount(0);
   await notice.getByRole('button', { name: 'Cerrar aviso de cambios' }).click();
   await expect(notice).toHaveCount(0);
+});
+
+test('con la IA desactivada se explica en el inicio y el diseño, la biblioteca y la exportación siguen', async ({ page }) => {
+  await stubAiStatus(page, { enabled: false, configured: true });
+  await page.goto('/');
+  const card = page.getByTestId('ai-unavailable-card');
+  await expect(card).toContainText('Crear con IA (no disponible)');
+  await expect(card).toContainText('IA desactivada en este equipo');
+  await expect(page.getByRole('button', { name: /Crear con IA/ })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /Usar plantilla/ })).toBeEnabled();
+  await expect(page.getByRole('button', { name: /Empezar desde cero/ })).toBeEnabled();
+
+  await card.getByRole('button', { name: 'Cómo habilitarla' }).click();
+  const help = page.getByTestId('ai-enable-dialog');
+  await expect(help).toContainText('GOOGLE_GENERATIVE_AI_API_KEY');
+  await expect(help).toContainText('Google AI Pro');
+  await help.getByRole('button', { name: 'Cerrar' }).click();
+
+  await page.getByRole('button', { name: /Empezar desde cero/ }).click();
+  await page.getByLabel('Nombre del proyecto').fill('Sin IA');
+  await page.getByRole('button', { name: 'Crear proyecto' }).click();
+  await expect(page.getByTestId('canvas-stage')).toBeVisible();
+
+  // "Pedir a la IA" is off with the reason on hover/focus; the AI guide never appears.
+  const trigger = page.getByTestId('ask-ai-trigger');
+  await expect(trigger).toBeDisabled();
+  await expect(trigger.locator('xpath=..').getByRole('tooltip', { includeHidden: true })).toContainText('IA desactivada en este equipo');
+  await expect(page.getByTestId('ai-guide')).toHaveCount(0);
+
+  await page.getByRole('tab', { name: 'Biblioteca' }).click();
+  await page.getByLabel('Buscar en la biblioteca').fill('inventario con pestañas');
+  await page.getByTestId('library-entry').first().getByRole('button', { name: /Insertar/ }).click();
+  await expect(page.getByTestId('canvas-stage').locator('[data-node-type="slot"]').first()).toBeVisible();
+  await expect(page.getByTestId('sync-status')).toHaveAttribute('data-status', 'saved');
+  // The inserted pattern is selected: its inspector offers the same disabled entry.
+  await expect(page.getByTestId('inspector').getByRole('button', { name: 'Pedir a la IA' })).toBeDisabled();
+
+  const unity = makeFakeUnityProject();
+  try {
+    await page.getByRole('tab', { name: 'Exportar' }).click();
+    await page.getByLabel('Carpeta del proyecto Unity').fill(unity);
+    await page.getByRole('button', { name: 'Analizar compatibilidad' }).click();
+    await expect(page.getByTestId('export-report')).toBeVisible();
+  } finally {
+    rmSync(unity, { recursive: true, force: true });
+  }
+});
+
+test('la cuota gratuita agotada (429) explica cuándo reintentar y el trabajo manual sigue', async ({ page }) => {
+  await createProject(page, /Empezar desde cero/, 'Cuota agotada');
+  await stubPost(page, '/ai/proposals', () => ({
+    status: 429,
+    body: {
+      error: {
+        code: 'aiQuotaExceeded',
+        message: 'Se agotó la cuota diaria del nivel gratuito de la API de Gemini.',
+        details: { freeTier: true, daily: true, retryAfterSeconds: 64_800 },
+      },
+    },
+  }));
+
+  await page.getByRole('tab', { name: 'Propuestas' }).click();
+  await page.getByTestId('proposals-panel').getByRole('button', { name: 'Generar propuestas' }).click();
+  const error = page.getByTestId('proposals-error');
+  await expect(error).toContainText('cuota diaria del nivel gratuito');
+  await expect(error).toContainText('~18 h');
+  await expect(error).toContainText('Google AI Pro');
+  await expect(error).toContainText('trabajo manual');
+
+  // A quota problem is transient: AI stays offered, nothing else is blocked.
+  await expect(page.getByTestId('ask-ai-trigger')).toBeEnabled();
+  await page.getByRole('tab', { name: 'Biblioteca' }).click();
+  await page.getByLabel('Buscar en la biblioteca').fill('inventario con pestañas');
+  await page.getByTestId('library-entry').first().getByRole('button', { name: /Insertar/ }).click();
+  await expect(page.getByTestId('canvas-stage').locator('[data-node-type="slot"]').first()).toBeVisible();
+  await expect(page.getByTestId('sync-status')).toHaveAttribute('data-status', 'saved');
 });

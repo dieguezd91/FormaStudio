@@ -1,4 +1,5 @@
 import { Check, Info, X } from 'lucide-react';
+import { retryAiStatus, useAiGate } from '@/app/useAiGate';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useUi, type ExploreTab } from '../store';
@@ -19,8 +20,8 @@ export function AiGuide() {
   const sources = useAi((state) => state.sources.length);
   const requirements = useAi((state) => state.requirements.length);
   const proposals = useAi((state) => state.proposals.filter((p) => p.status !== 'discarded').length);
-  const available = useAi((state) => state.availability);
-  if (!visible) return null;
+  const gate = useAiGate();
+  if (!visible || gate.hideGuide) return null;
 
   const steps = guideSteps({ sources, requirements, proposals });
   return (
@@ -57,11 +58,17 @@ export function AiGuide() {
           <X size={14} />
         </Button>
       </div>
-      {available !== 'available' ? (
+      {gate.reason || gate.notice ? (
         <p className="mt-1.5 text-xs text-muted-foreground" data-testid="guide-ai-note">
-          {available === 'unavailable'
-            ? 'La IA no está disponible en este servicio (falta la clave de Gemini). Podés subir tu documentación y diseñar a mano.'
-            : 'La IA necesita una clave de Gemini en el servicio local. Si falta, te lo avisamos y podés seguir a mano.'}
+          {gate.reason ?? gate.notice} Podés subir tu documentación y diseñar a mano.
+          {gate.canRetry ? (
+            <>
+              {' '}
+              <button type="button" className="text-primary underline-offset-2 hover:underline" onClick={() => void retryAiStatus()}>
+                Reintentar
+              </button>
+            </>
+          ) : null}
         </p>
       ) : null}
     </div>

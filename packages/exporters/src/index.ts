@@ -1,13 +1,25 @@
-export const EXPORT_TARGETS = ['unity-ugui', 'unity-uitoolkit', 'web-react'] as const;
+import type { Result } from '@forma/design-core';
+import { createUguiExporter } from './ugui';
+import { type ExportError, type ExportTargetId, type Exporter } from './types';
 
-export type ExportTargetId = (typeof EXPORT_TARGETS)[number];
+export * from './report';
+export * from './types';
+export * from './ugui';
 
-export interface ExportResult {
-  /** Relative output path to file contents. */
-  files: Record<string, string>;
-}
+const TARGET_NAMES: Record<ExportTargetId, string> = {
+  'unity-ugui': 'Unity uGUI',
+  'unity-uitoolkit': 'Unity UI Toolkit',
+  'web-react': 'Web (React)',
+};
 
-export interface Exporter {
-  readonly target: ExportTargetId;
-  export(document: unknown): Promise<ExportResult>;
+/** UI Toolkit and web are declared targets; only uGUI has an implementation in this slice. */
+export function getExporter(target: ExportTargetId): Result<Exporter, ExportError> {
+  if (target === 'unity-ugui') return { ok: true, value: createUguiExporter() };
+  return {
+    ok: false,
+    error: {
+      code: 'notImplemented',
+      reasons: [`El exportador para ${TARGET_NAMES[target]} todavía no está implementado.`],
+    },
+  };
 }

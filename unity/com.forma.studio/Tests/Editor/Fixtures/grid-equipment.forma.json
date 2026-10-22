@@ -1,0 +1,5901 @@
+{
+  "format": "forma.ugui-bundle/v1",
+  "meta": {
+    "bundleVersion": 1,
+    "projectId": "proj_1",
+    "projectName": "Proyecto de prueba",
+    "documentRevision": 7,
+    "screenId": "s1",
+    "screenName": "Inventario",
+    "exportedAt": "2026-10-22T10:00:00.000Z",
+    "exporter": "forma-fixture/0"
+  },
+  "canvas": {
+    "referenceResolution": {
+      "x": 1920,
+      "y": 1080
+    },
+    "scaleMode": "ScaleWithScreenSize",
+    "matchWidthOrHeight": 0.5
+  },
+  "theme": {
+    "colors": {
+      "surface": "#1f2430",
+      "border": "#3b4458",
+      "text": "#e8ecf4",
+      "surfaceAlt": "#2a3140"
+    },
+    "fontSizes": {
+      "body": 16
+    },
+    "spacing": {
+      "xs": 4
+    },
+    "radii": {
+      "md": 8,
+      "sm": 4
+    }
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "name": "Root",
+      "parentId": null,
+      "siblingIndex": 0,
+      "kind": "container",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 0
+        },
+        "anchorMax": {
+          "x": 1,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "bindings": [],
+      "components": []
+    },
+    {
+      "id": "node_1",
+      "name": "Inventario y equipamiento",
+      "parentId": "root",
+      "siblingIndex": 0,
+      "kind": "panel",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 616,
+          "y": 324
+        }
+      },
+      "bindings": [],
+      "components": [],
+      "image": {
+        "color": {
+          "value": "#1f2430",
+          "token": "colors.surface"
+        },
+        "raycastTarget": false
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 8
+    },
+    {
+      "id": "node_2",
+      "name": "Panel de equipamiento",
+      "parentId": "node_1",
+      "siblingIndex": 0,
+      "kind": "panel",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 16,
+          "y": -16
+        },
+        "sizeDelta": {
+          "x": 232,
+          "y": 264
+        }
+      },
+      "bindings": [],
+      "components": [],
+      "image": {
+        "color": {
+          "value": "#1f2430",
+          "token": "colors.surface"
+        },
+        "raycastTarget": false
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 8
+    },
+    {
+      "id": "node_3",
+      "name": "Título equipamiento",
+      "parentId": "node_2",
+      "siblingIndex": 0,
+      "kind": "text",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 16,
+          "y": -8
+        },
+        "sizeDelta": {
+          "x": 200,
+          "y": 24
+        }
+      },
+      "bindings": [],
+      "components": [],
+      "text": {
+        "value": "Equipamiento",
+        "fontSize": 16,
+        "color": {
+          "value": "#e8ecf4",
+          "token": "colors.text"
+        },
+        "alignment": "Left",
+        "fontWeight": 400
+      }
+    },
+    {
+      "id": "node_4",
+      "name": "Equipo Cabeza",
+      "parentId": "node_2",
+      "siblingIndex": 1,
+      "kind": "equipmentSlot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 84,
+          "y": -48
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "target",
+          "accepts": [
+            "head"
+          ],
+          "intent": "inventory.equipItem"
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "head"
+              }
+            ],
+            "index": 0
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "head"
+              }
+            ],
+            "index": 0
+          }
+        },
+        {
+          "type": "FormaEquipmentSlot",
+          "slotType": "head"
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_5",
+      "name": "Ítem equipado",
+      "parentId": "node_4",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [
+            {
+              "field": "slotType",
+              "value": "head"
+            }
+          ],
+          "index": 0,
+          "field": "icon"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "head"
+              }
+            ],
+            "index": 0,
+            "field": "icon"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "head"
+              }
+            ],
+            "index": 0,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_6",
+      "name": "Equipo Torso",
+      "parentId": "node_2",
+      "siblingIndex": 2,
+      "kind": "equipmentSlot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 84,
+          "y": -116
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "target",
+          "accepts": [
+            "chest"
+          ],
+          "intent": "inventory.equipItem"
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "chest"
+              }
+            ],
+            "index": 0
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "chest"
+              }
+            ],
+            "index": 0
+          }
+        },
+        {
+          "type": "FormaEquipmentSlot",
+          "slotType": "chest"
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_7",
+      "name": "Ítem equipado",
+      "parentId": "node_6",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [
+            {
+              "field": "slotType",
+              "value": "chest"
+            }
+          ],
+          "index": 0,
+          "field": "icon"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "chest"
+              }
+            ],
+            "index": 0,
+            "field": "icon"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "chest"
+              }
+            ],
+            "index": 0,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_8",
+      "name": "Equipo Piernas",
+      "parentId": "node_2",
+      "siblingIndex": 3,
+      "kind": "equipmentSlot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 84,
+          "y": -184
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "target",
+          "accepts": [
+            "legs"
+          ],
+          "intent": "inventory.equipItem"
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "legs"
+              }
+            ],
+            "index": 0
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "legs"
+              }
+            ],
+            "index": 0
+          }
+        },
+        {
+          "type": "FormaEquipmentSlot",
+          "slotType": "legs"
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_9",
+      "name": "Ítem equipado",
+      "parentId": "node_8",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [
+            {
+              "field": "slotType",
+              "value": "legs"
+            }
+          ],
+          "index": 0,
+          "field": "icon"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "legs"
+              }
+            ],
+            "index": 0,
+            "field": "icon"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "legs"
+              }
+            ],
+            "index": 0,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_10",
+      "name": "Equipo Arma",
+      "parentId": "node_2",
+      "siblingIndex": 4,
+      "kind": "equipmentSlot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 16,
+          "y": -116
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "target",
+          "accepts": [
+            "weapon"
+          ],
+          "intent": "inventory.equipItem"
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "weapon"
+              }
+            ],
+            "index": 0
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "weapon"
+              }
+            ],
+            "index": 0
+          }
+        },
+        {
+          "type": "FormaEquipmentSlot",
+          "slotType": "weapon"
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_11",
+      "name": "Ítem equipado",
+      "parentId": "node_10",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [
+            {
+              "field": "slotType",
+              "value": "weapon"
+            }
+          ],
+          "index": 0,
+          "field": "icon"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "weapon"
+              }
+            ],
+            "index": 0,
+            "field": "icon"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "weapon"
+              }
+            ],
+            "index": 0,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_12",
+      "name": "Equipo Mano secundaria",
+      "parentId": "node_2",
+      "siblingIndex": 5,
+      "kind": "equipmentSlot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 152,
+          "y": -116
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "target",
+          "accepts": [
+            "offhand"
+          ],
+          "intent": "inventory.equipItem"
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "offhand"
+              }
+            ],
+            "index": 0
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "offhand"
+              }
+            ],
+            "index": 0
+          }
+        },
+        {
+          "type": "FormaEquipmentSlot",
+          "slotType": "offhand"
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_13",
+      "name": "Ítem equipado",
+      "parentId": "node_12",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [
+            {
+              "field": "slotType",
+              "value": "offhand"
+            }
+          ],
+          "index": 0,
+          "field": "icon"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "offhand"
+              }
+            ],
+            "index": 0,
+            "field": "icon"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [
+              {
+                "field": "slotType",
+                "value": "offhand"
+              }
+            ],
+            "index": 0,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_14",
+      "name": "Título",
+      "parentId": "node_1",
+      "siblingIndex": 1,
+      "kind": "text",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 264,
+          "y": -8
+        },
+        "sizeDelta": {
+          "x": 240,
+          "y": 24
+        }
+      },
+      "bindings": [],
+      "components": [],
+      "text": {
+        "value": "Inventario",
+        "fontSize": 16,
+        "color": {
+          "value": "#e8ecf4",
+          "token": "colors.text"
+        },
+        "alignment": "Left",
+        "fontWeight": 400
+      }
+    },
+    {
+      "id": "node_15",
+      "name": "Cuadrícula de inventario",
+      "parentId": "node_1",
+      "siblingIndex": 2,
+      "kind": "grid",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 264,
+          "y": -40
+        },
+        "sizeDelta": {
+          "x": 336,
+          "y": 268
+        }
+      },
+      "bindings": [
+        {
+          "prop": "items",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": []
+        }
+      ],
+      "components": [],
+      "layoutGroup": {
+        "type": "Grid",
+        "cellSize": {
+          "x": 64,
+          "y": 64
+        },
+        "spacing": 4,
+        "padding": {
+          "left": 0,
+          "right": 0,
+          "top": 0,
+          "bottom": 0
+        },
+        "constraint": "FixedColumnCount",
+        "constraintCount": 5
+      }
+    },
+    {
+      "id": "node_16",
+      "name": "Casilla 1",
+      "parentId": "node_15",
+      "siblingIndex": 0,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 0
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 0
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_17",
+      "name": "Ítem",
+      "parentId": "node_16",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 0,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 0,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 0,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 0,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 0,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_18",
+      "name": "Casilla 2",
+      "parentId": "node_15",
+      "siblingIndex": 1,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 68,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 1
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 1
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_19",
+      "name": "Ítem",
+      "parentId": "node_18",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 1,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 1,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 1,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 1,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 1,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_20",
+      "name": "Casilla 3",
+      "parentId": "node_15",
+      "siblingIndex": 2,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 136,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 2
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 2
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_21",
+      "name": "Ítem",
+      "parentId": "node_20",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 2,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 2,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 2,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 2,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 2,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_22",
+      "name": "Casilla 4",
+      "parentId": "node_15",
+      "siblingIndex": 3,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 204,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 3
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 3
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_23",
+      "name": "Ítem",
+      "parentId": "node_22",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 3,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 3,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 3,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 3,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 3,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_24",
+      "name": "Casilla 5",
+      "parentId": "node_15",
+      "siblingIndex": 4,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 272,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 4
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 4
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_25",
+      "name": "Ítem",
+      "parentId": "node_24",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 4,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 4,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 4,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 4,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 4,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_26",
+      "name": "Casilla 6",
+      "parentId": "node_15",
+      "siblingIndex": 5,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": -68
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 5
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 5
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_27",
+      "name": "Ítem",
+      "parentId": "node_26",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 5,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 5,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 5,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 5,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 5,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_28",
+      "name": "Casilla 7",
+      "parentId": "node_15",
+      "siblingIndex": 6,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 68,
+          "y": -68
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 6
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 6
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_29",
+      "name": "Ítem",
+      "parentId": "node_28",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 6,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 6,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 6,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 6,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 6,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_30",
+      "name": "Casilla 8",
+      "parentId": "node_15",
+      "siblingIndex": 7,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 136,
+          "y": -68
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 7
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 7
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_31",
+      "name": "Ítem",
+      "parentId": "node_30",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 7,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 7,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 7,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 7,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 7,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_32",
+      "name": "Casilla 9",
+      "parentId": "node_15",
+      "siblingIndex": 8,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 204,
+          "y": -68
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 8
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 8
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_33",
+      "name": "Ítem",
+      "parentId": "node_32",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 8,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 8,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 8,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 8,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 8,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_34",
+      "name": "Casilla 10",
+      "parentId": "node_15",
+      "siblingIndex": 9,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 272,
+          "y": -68
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 9
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 9
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_35",
+      "name": "Ítem",
+      "parentId": "node_34",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 9,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 9,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 9,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 9,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 9,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_36",
+      "name": "Casilla 11",
+      "parentId": "node_15",
+      "siblingIndex": 10,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": -136
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 10
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 10
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_37",
+      "name": "Ítem",
+      "parentId": "node_36",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 10,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 10,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 10,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 10,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 10,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_38",
+      "name": "Casilla 12",
+      "parentId": "node_15",
+      "siblingIndex": 11,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 68,
+          "y": -136
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 11
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 11
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_39",
+      "name": "Ítem",
+      "parentId": "node_38",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 11,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 11,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 11,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 11,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 11,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_40",
+      "name": "Casilla 13",
+      "parentId": "node_15",
+      "siblingIndex": 12,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 136,
+          "y": -136
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 12
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 12
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_41",
+      "name": "Ítem",
+      "parentId": "node_40",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 12,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 12,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 12,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 12,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 12,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_42",
+      "name": "Casilla 14",
+      "parentId": "node_15",
+      "siblingIndex": 13,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 204,
+          "y": -136
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 13
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 13
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_43",
+      "name": "Ítem",
+      "parentId": "node_42",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 13,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 13,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 13,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 13,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 13,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_44",
+      "name": "Casilla 15",
+      "parentId": "node_15",
+      "siblingIndex": 14,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 272,
+          "y": -136
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 14
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 14
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_45",
+      "name": "Ítem",
+      "parentId": "node_44",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 14,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 14,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 14,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 14,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 14,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_46",
+      "name": "Casilla 16",
+      "parentId": "node_15",
+      "siblingIndex": 15,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": -204
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 15
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 15
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_47",
+      "name": "Ítem",
+      "parentId": "node_46",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 15,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 15,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 15,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 15,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 15,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_48",
+      "name": "Casilla 17",
+      "parentId": "node_15",
+      "siblingIndex": 16,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 68,
+          "y": -204
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 16
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 16
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_49",
+      "name": "Ítem",
+      "parentId": "node_48",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 16,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 16,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 16,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 16,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 16,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_50",
+      "name": "Casilla 18",
+      "parentId": "node_15",
+      "siblingIndex": 17,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 136,
+          "y": -204
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 17
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 17
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_51",
+      "name": "Ítem",
+      "parentId": "node_50",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 17,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 17,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 17,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 17,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 17,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_52",
+      "name": "Casilla 19",
+      "parentId": "node_15",
+      "siblingIndex": 18,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 204,
+          "y": -204
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 18
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 18
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_53",
+      "name": "Ítem",
+      "parentId": "node_52",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 18,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 18,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 18,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 18,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 18,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    },
+    {
+      "id": "node_54",
+      "name": "Casilla 20",
+      "parentId": "node_15",
+      "siblingIndex": 19,
+      "kind": "slot",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 272,
+          "y": -204
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [],
+      "components": [
+        {
+          "type": "FormaDragDrop",
+          "role": "both",
+          "accepts": [
+            "item"
+          ],
+          "intent": "inventory.moveItem"
+        },
+        {
+          "type": "FormaStack",
+          "maxStack": 99,
+          "showCount": true
+        },
+        {
+          "type": "FormaSelectable",
+          "mode": "single"
+        },
+        {
+          "type": "FormaSplit",
+          "intent": "inventory.splitStack"
+        },
+        {
+          "type": "FormaContextMenu",
+          "trigger": "secondaryClick",
+          "actions": [
+            {
+              "id": "use",
+              "label": "Usar",
+              "intent": "inventory.useItem"
+            },
+            {
+              "id": "split",
+              "label": "Dividir",
+              "intent": "inventory.splitStack"
+            },
+            {
+              "id": "drop",
+              "label": "Soltar",
+              "intent": "inventory.dropItem"
+            }
+          ]
+        },
+        {
+          "type": "FormaTooltip",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 19
+          }
+        },
+        {
+          "type": "FormaSlot",
+          "binding": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 19
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#2a3140",
+          "token": "colors.surfaceAlt"
+        },
+        "raycastTarget": true
+      },
+      "outline": {
+        "color": {
+          "value": "#3b4458",
+          "token": "colors.border"
+        },
+        "width": 1
+      },
+      "cornerRadius": 4
+    },
+    {
+      "id": "node_55",
+      "name": "Ítem",
+      "parentId": "node_54",
+      "siblingIndex": 0,
+      "kind": "itemView",
+      "rect": {
+        "anchorMin": {
+          "x": 0,
+          "y": 1
+        },
+        "anchorMax": {
+          "x": 0,
+          "y": 1
+        },
+        "pivot": {
+          "x": 0,
+          "y": 1
+        },
+        "anchoredPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "sizeDelta": {
+          "x": 64,
+          "y": 64
+        }
+      },
+      "bindings": [
+        {
+          "prop": "icon",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 19,
+          "field": "icon"
+        },
+        {
+          "prop": "quantity",
+          "dataSourceId": "inventory.items",
+          "root": "items",
+          "filters": [],
+          "index": 19,
+          "field": "quantity"
+        }
+      ],
+      "components": [
+        {
+          "type": "FormaItemView",
+          "icon": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 19,
+            "field": "icon"
+          },
+          "quantity": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 19,
+            "field": "quantity"
+          },
+          "name": {
+            "dataSourceId": "inventory.items",
+            "root": "items",
+            "filters": [],
+            "index": 19,
+            "field": "name"
+          }
+        }
+      ],
+      "image": {
+        "color": {
+          "value": "#00000000"
+        },
+        "raycastTarget": false
+      }
+    }
+  ],
+  "dataSources": [
+    {
+      "id": "inventory.items",
+      "name": "inventory.items",
+      "kind": "collection",
+      "fields": [
+        {
+          "name": "id",
+          "type": "id"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "icon",
+          "type": "image"
+        },
+        {
+          "name": "quantity",
+          "type": "number"
+        },
+        {
+          "name": "maxStack",
+          "type": "number"
+        },
+        {
+          "name": "category",
+          "type": "string"
+        },
+        {
+          "name": "slotType",
+          "type": "string"
+        },
+        {
+          "name": "rarity",
+          "type": "string"
+        }
+      ],
+      "connection": "simulated",
+      "mock": [
+        {
+          "id": "espada-de-hierro",
+          "name": "Espada de hierro",
+          "icon": "mock/icons/espada-de-hierro.png",
+          "quantity": 1,
+          "maxStack": 1,
+          "category": "Armas",
+          "slotType": "weapon",
+          "rarity": "común"
+        },
+        {
+          "id": "arco-de-fresno",
+          "name": "Arco de fresno",
+          "icon": "mock/icons/arco-de-fresno.png",
+          "quantity": 1,
+          "maxStack": 1,
+          "category": "Armas",
+          "slotType": "weapon",
+          "rarity": "poco común"
+        },
+        {
+          "id": "baston-de-runas",
+          "name": "Bastón de runas",
+          "icon": "mock/icons/baston-de-runas.png",
+          "quantity": 1,
+          "maxStack": 1,
+          "category": "Armas",
+          "slotType": "weapon",
+          "rarity": "raro"
+        },
+        {
+          "id": "daga-del-cazador",
+          "name": "Daga del cazador",
+          "icon": "mock/icons/daga-del-cazador.png",
+          "quantity": 1,
+          "maxStack": 1,
+          "category": "Armas",
+          "slotType": "weapon",
+          "rarity": "épico"
+        },
+        {
+          "id": "yelmo-de-acero",
+          "name": "Yelmo de acero",
+          "icon": "mock/icons/yelmo-de-acero.png",
+          "quantity": 1,
+          "maxStack": 1,
+          "category": "Armaduras",
+          "slotType": "head",
+          "rarity": "poco común"
+        },
+        {
+          "id": "peto-de-cuero",
+          "name": "Peto de cuero",
+          "icon": "mock/icons/peto-de-cuero.png",
+          "quantity": 1,
+          "maxStack": 1,
+          "category": "Armaduras",
+          "slotType": "chest",
+          "rarity": "común"
+        },
+        {
+          "id": "grebas-de-malla",
+          "name": "Grebas de malla",
+          "icon": "mock/icons/grebas-de-malla.png",
+          "quantity": 1,
+          "maxStack": 1,
+          "category": "Armaduras",
+          "slotType": "legs",
+          "rarity": "raro"
+        },
+        {
+          "id": "escudo-de-roble",
+          "name": "Escudo de roble",
+          "icon": "mock/icons/escudo-de-roble.png",
+          "quantity": 1,
+          "maxStack": 1,
+          "category": "Armaduras",
+          "slotType": "offhand",
+          "rarity": "común"
+        },
+        {
+          "id": "pocion-de-vida",
+          "name": "Poción de vida",
+          "icon": "mock/icons/pocion-de-vida.png",
+          "quantity": 5,
+          "maxStack": 20,
+          "category": "Consumibles",
+          "slotType": "none",
+          "rarity": "común"
+        },
+        {
+          "id": "pocion-de-mana",
+          "name": "Poción de maná",
+          "icon": "mock/icons/pocion-de-mana.png",
+          "quantity": 3,
+          "maxStack": 20,
+          "category": "Consumibles",
+          "slotType": "none",
+          "rarity": "poco común"
+        },
+        {
+          "id": "pan-de-viaje",
+          "name": "Pan de viaje",
+          "icon": "mock/icons/pan-de-viaje.png",
+          "quantity": 8,
+          "maxStack": 20,
+          "category": "Consumibles",
+          "slotType": "none",
+          "rarity": "común"
+        },
+        {
+          "id": "elixir-de-vigor",
+          "name": "Elixir de vigor",
+          "icon": "mock/icons/elixir-de-vigor.png",
+          "quantity": 2,
+          "maxStack": 10,
+          "category": "Consumibles",
+          "slotType": "none",
+          "rarity": "raro"
+        },
+        {
+          "id": "mineral-de-hierro",
+          "name": "Mineral de hierro",
+          "icon": "mock/icons/mineral-de-hierro.png",
+          "quantity": 12,
+          "maxStack": 50,
+          "category": "Materiales",
+          "slotType": "none",
+          "rarity": "común"
+        },
+        {
+          "id": "cuero-curtido",
+          "name": "Cuero curtido",
+          "icon": "mock/icons/cuero-curtido.png",
+          "quantity": 7,
+          "maxStack": 50,
+          "category": "Materiales",
+          "slotType": "none",
+          "rarity": "común"
+        },
+        {
+          "id": "hierba-lunar",
+          "name": "Hierba lunar",
+          "icon": "mock/icons/hierba-lunar.png",
+          "quantity": 15,
+          "maxStack": 50,
+          "category": "Materiales",
+          "slotType": "none",
+          "rarity": "poco común"
+        },
+        {
+          "id": "esencia-arcana",
+          "name": "Esencia arcana",
+          "icon": "mock/icons/esencia-arcana.png",
+          "quantity": 4,
+          "maxStack": 50,
+          "category": "Materiales",
+          "slotType": "none",
+          "rarity": "épico"
+        }
+      ]
+    }
+  ],
+  "intents": [
+    {
+      "name": "inventory.moveItem",
+      "description": "El jugador arrastra un ítem de una casilla a otra.",
+      "payload": [
+        {
+          "name": "itemId",
+          "type": "id"
+        },
+        {
+          "name": "fromSlot",
+          "type": "id"
+        },
+        {
+          "name": "toSlot",
+          "type": "id"
+        }
+      ],
+      "connection": "unconnected"
+    },
+    {
+      "name": "inventory.useItem",
+      "description": "El jugador usa un ítem.",
+      "payload": [
+        {
+          "name": "itemId",
+          "type": "id"
+        }
+      ],
+      "connection": "unconnected"
+    },
+    {
+      "name": "inventory.splitStack",
+      "description": "El jugador divide una pila de ítems.",
+      "payload": [
+        {
+          "name": "itemId",
+          "type": "id"
+        },
+        {
+          "name": "amount",
+          "type": "number"
+        }
+      ],
+      "connection": "unconnected"
+    },
+    {
+      "name": "inventory.dropItem",
+      "description": "El jugador suelta un ítem al mundo.",
+      "payload": [
+        {
+          "name": "itemId",
+          "type": "id"
+        }
+      ],
+      "connection": "unconnected"
+    },
+    {
+      "name": "inventory.equipItem",
+      "description": "El jugador equipa un ítem en una casilla de equipamiento.",
+      "payload": [
+        {
+          "name": "itemId",
+          "type": "id"
+        },
+        {
+          "name": "slotType",
+          "type": "string"
+        }
+      ],
+      "connection": "unconnected"
+    }
+  ],
+  "managed": {
+    "root": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect"
+    ],
+    "node_1": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius"
+    ],
+    "node_2": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius"
+    ],
+    "node_3": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "text.value",
+      "text.fontSize",
+      "text.color",
+      "text.alignment",
+      "text.fontWeight"
+    ],
+    "node_4": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaTooltip",
+      "components.FormaSlot",
+      "components.FormaEquipmentSlot"
+    ],
+    "node_5": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_6": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaTooltip",
+      "components.FormaSlot",
+      "components.FormaEquipmentSlot"
+    ],
+    "node_7": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_8": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaTooltip",
+      "components.FormaSlot",
+      "components.FormaEquipmentSlot"
+    ],
+    "node_9": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_10": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaTooltip",
+      "components.FormaSlot",
+      "components.FormaEquipmentSlot"
+    ],
+    "node_11": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_12": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaTooltip",
+      "components.FormaSlot",
+      "components.FormaEquipmentSlot"
+    ],
+    "node_13": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_14": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "text.value",
+      "text.fontSize",
+      "text.color",
+      "text.alignment",
+      "text.fontWeight"
+    ],
+    "node_15": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "layoutGroup",
+      "bindings"
+    ],
+    "node_16": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_17": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_18": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_19": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_20": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_21": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_22": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_23": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_24": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_25": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_26": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_27": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_28": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_29": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_30": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_31": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_32": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_33": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_34": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_35": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_36": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_37": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_38": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_39": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_40": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_41": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_42": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_43": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_44": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_45": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_46": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_47": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_48": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_49": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_50": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_51": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_52": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_53": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ],
+    "node_54": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "outline",
+      "cornerRadius",
+      "components.FormaDragDrop",
+      "components.FormaStack",
+      "components.FormaSelectable",
+      "components.FormaSplit",
+      "components.FormaContextMenu",
+      "components.FormaTooltip",
+      "components.FormaSlot"
+    ],
+    "node_55": [
+      "name",
+      "parentId",
+      "siblingIndex",
+      "kind",
+      "rect",
+      "image.color",
+      "image.raycastTarget",
+      "bindings",
+      "components.FormaItemView"
+    ]
+  }
+}

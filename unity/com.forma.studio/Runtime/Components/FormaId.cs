@@ -9,6 +9,9 @@ namespace Forma.Studio
     {
         public string nodeId;
 
+        [Tooltip("Property paths Forma owned on this node at the last import (bundle 'managed'). Written by the importer; do not edit.")]
+        public string[] managedPaths = System.Array.Empty<string>();
+
         /// <summary>The node id of the GameObject carrying <paramref name="component"/>; its name when it has no <see cref="FormaId"/>.</summary>
         public static string NodeIdOf(Component component)
         {

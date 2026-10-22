@@ -11,3 +11,6 @@ Run the tests headless (no `-quit` with `-runTests`):
   -projectPath <repo>\unity\FormaSandbox -runTests -testPlatform EditMode `
   -testResults <tmp>\results.xml -logFile <tmp>\unity.log
 ```
+
+The importer tests write temporary bundles, Prefabs and sprites under `Assets/FormaImporterTests/` and delete that folder after
+each test; nothing else is added to the project.

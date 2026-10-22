@@ -90,7 +90,7 @@ child of the Canvas), `siblingIndex`, `kind`, `rect`, `bindings`, `components`.
 | --------------- | ---------------------------------------------------------------------------------- |
 | `container`     | Empty RectTransform.                                                               |
 | `panel`         | RectTransform (+ `image` when present).                                            |
-| `text`          | TextMeshProUGUI.                                                                   |
+| `text`          | TextMeshProUGUI. A `text` node with `bindings` also gets `FormaBoundText` (see Bindings). |
 | `image`         | Image.                                                                             |
 | `button`        | Image + Button; the label is a child TextMeshProUGUI (sync key `<id>/label`) built from `text`. |
 | `scroll`        | ScrollRect with viewport and content; children go under the content rect, whose size equals the node's. |
@@ -99,8 +99,8 @@ child of the Canvas), `siblingIndex`, `kind`, `rect`, `bindings`, `components`.
 | `itemView`      | Image used as the item icon, plus optional quantity/name text driven by `FormaItemView`. |
 | `equipmentSlot` | Like `slot`, plus `FormaEquipmentSlot`.                                            |
 | `tabBar`        | Container for the tab buttons.                                                     |
-| `contextMenu`   | Panel hosting the menu entries (its button children).                              |
-| `tooltip`       | Panel shown by `FormaTooltip`; its text children carry `bindings`.                 |
+| `contextMenu`   | Panel hosting the menu entries (its button children, in action order). Linked to `FormaContextMenu.panel` and created inactive (see Panels). |
+| `tooltip`       | Panel shown by `FormaTooltip`; its text children carry `bindings` (`FormaBoundText`). Linked to `FormaTooltip.panel` and created inactive (see Panels). |
 
 Optional blocks (present only when the design sets them):
 
@@ -141,6 +141,12 @@ becomes:
 `node.bindings` adds `prop` (what is bound, e.g. `icon`, `quantity`, `text`, `items`). A binding
 whose path cannot be parsed is dropped from the bundle and listed in the compatibility report.
 
+A `text` node whose binding has `prop: "text"` is driven by `FormaBoundText`: the field of the bound row is written
+into the node's TextMeshPro text (`string.Format(format, value)`, `format` defaults to `{0}`), so a label such as an
+item name or a tooltip line fills itself. `FormaBoundText` is derived from `node.bindings`; it has no entry in
+`node.components` (the `bindings` managed path covers it). A text bound to `quantity` or `name` *inside an `itemView`* is
+the item view's own text instead (see Node to uGUI).
+
 ## Components (`node.components`)
 
 Each entry is a discriminated object on `type`. Attach the matching MonoBehaviour to the node's
@@ -153,14 +159,34 @@ GameObject. `intent` fields are intent **names** (`inventory.moveItem`), never i
 | `FormaDragDrop`      | `role`: `source` \| `target` \| `both`, `accepts: string[]`, `intent`. `accepts` tags: `item`, an item's `slotType` or `category`; empty accepts everything. |
 | `FormaStack`         | `maxStack`, `showCount`.                                                                        |
 | `FormaSplit`         | `intent`.                                                                                       |
-| `FormaContextMenu`   | `trigger`: `secondaryClick` \| `longPress` \| `button`, `actions[{id,label,intent}]`.           |
-| `FormaTooltip`       | `binding`: the item row shown.                                                                  |
+| `FormaContextMenu`   | `trigger`: `secondaryClick` \| `longPress` \| `button`, `actions[{id,label,intent}]`. The menu panel is the exported `contextMenu` node (see Panels). |
+| `FormaTooltip`       | `binding`: the item row shown. The tooltip panel is the exported `tooltip` node (see Panels).   |
 | `FormaSlot`          | `binding`: the row this slot shows (`dataSourceId`, `filters`, `index`; no `field`). Derived from the slot's own binding, its tooltip, or its subtree, like the runtime. |
 | `FormaItemView`      | `icon?`, `quantity?`, `name?` bindings. `name` is the `name` field of the icon's row.           |
-| `FormaEquipmentSlot` | `slotType`.                                                                                     |
+| `FormaEquipmentSlot` | `slotType`. The equipped item is looked up by the node's **design node id** (`IFormaDataSource.GetEquipped(nodeId)`). |
 
 Order: behavior components in the node's behavior order, then `FormaSlot` / `FormaItemView` /
 `FormaEquipmentSlot`.
+
+### Panels
+
+The bundle has no explicit link from a slot to its menu or tooltip panel. A node of kind `contextMenu` / `tooltip` is an
+ordinary panel in the node tree; the importer links `FormaContextMenu.panel` / `FormaTooltip.panel` to the panel of that
+kind **closest in the node tree** (inside the slot's subtree first, then inside its nearest ancestor's, then anywhere on
+the screen), only when the field is empty, and creates the panel GameObject **inactive**. At run time the component shows it
+(a context menu re-parents it under the root canvas; the `Button` children of the panel, in order, stand for the actions).
+With no exported panel the components build a simple one at run time.
+
+### Runtime rules the importer relies on
+
+- **Data source resolution** (`FormaScreen.GetSource(dataSourceId)`): the source whose `Id` equals the data source id; else the
+  wildcard source (`"*"`, `FormaSimulatedInventorySource`); else the only source of the screen; else none.
+- **Equipment key**: equipped items are keyed by the *design node id* of the `equipmentSlot` (the same id used as `slotId` /
+  `fromSlot` / `toSlot` in intent payloads).
+- **Selection**: `FormaSelectable` selects among its siblings. In `multi` mode a plain click (or Submit) **toggles** the node;
+  there is no modifier key, because a mouse event carries none.
+- **TextMeshPro**: texts, menus, the split dialog and tooltips use TextMeshPro. The project needs the TMP Essential Resources
+  (Window > TextMeshPro > Import TMP Essential Resources) or texts have no font. The importer warns when they are missing.
 
 ## Data sources and intents
 
@@ -227,13 +253,81 @@ approximate (`Outline`), opacity supported (`CanvasGroup`), `longPress` context 
 (right click with a mouse), tooltips adapted (hover only), simulated or unconnected data sources
 need `IFormaDataSource`, unconnected intents need an `IFormaIntentHandler`.
 
+## Unity importer (`unity/com.forma.studio`, Editor)
+
+### Trigger and output
+
+The importer runs when a `*.forma.json` is imported or changed under `Assets/` (an `AssetPostprocessor` that defers the work with
+`EditorApplication.delayCall`; a bundle whose content hash equals the last successful import is skipped), or from the menu:
+
+| Menu                                          | Does                                                                           |
+| --------------------------------------------- | ------------------------------------------------------------------------------ |
+| `Tools/Forma Studio/Reimport bundle`          | Imports the selected `*.forma.json` again (forced).                            |
+| `Tools/Forma Studio/Open import report`       | Shows the report of the selected bundle/Prefab (or the last one) in a window.  |
+| `Tools/Forma Studio/Create Canvas for prefab` | Selected Prefab -> a Canvas (Screen Space Overlay, Scale With Screen Size at the bundle's reference resolution, match 0.5), an EventSystem (Input System UI module when that package is present, else the standalone module) and an instance of the Prefab. |
+
+Files written next to the bundle (`<Name>` is the bundle's file name without `.forma.json`):
+
+| File                                | Contents                                                                         |
+| ----------------------------------- | -------------------------------------------------------------------------------- |
+| `<Name>.prefab`                     | The screen. The root is a stretched `RectTransform` (not a Canvas) with `FormaScreen`, `FormaSimulatedInventorySource` (reading the bundle's `mock` rows) and a `CanvasGroup`, so it also drops into an existing Canvas. |
+| `<Name>.theme.asset`                | `FormaTheme` with the bundle's tokens. Nodes with a color `token` get a `FormaThemeBinding`. Tokens are overwritten from the bundle; tokens the project added stay. |
+| `<Name>.import-report.json`         | The `ImportReport` (below).                                                      |
+| `Sprites/forma_round_<r>.png`       | White rounded rectangle with 9-slice borders `r`, one per `cornerRadius`; the `Image` is *Sliced* and tinted by its color. |
+| `.backup/<Name>-<timestamp>.prefab` | Copy of the Prefab as it was before a re-import; the last 3 are kept. The folder name starts with a dot, so Unity does not import it. |
+
+### Node to uGUI
+
+Every node becomes a GameObject with a `RectTransform` (the bundle `rect` as is) and a `FormaId`. Besides the node's own
+components the importer adds *synthetic children*, each with its own `FormaId`:
+
+| Node                       | Synthetic child ids                                                          |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| `button`                   | `<id>/label`: the TextMeshPro label (stretched).                             |
+| `scroll`                   | `<id>/viewport` (`Image` + `Mask`) and `<id>/content`; the node's children and its `layoutGroup` go on the content. |
+| `itemView` with `quantity` | `<id>/quantity`: TextMeshPro text at the bottom right, `FormaItemView.quantityText`. |
+
+`button`, `slot` and `equipmentSlot` get a `Button` (ColorTint) targeting their `Image`; a slot without a fill gets a transparent,
+raycast-enabled `Image`. `layoutGroup` becomes a `Grid` / `Horizontal` / `Vertical` layout group with upper-left alignment; lines keep child
+control and force-expand off so the exported sizes survive. References between nodes (`FormaTabs` button and content, `FormaItemView.icon`,
+panels) are wired by id once every GameObject exists.
+
+### Updating a Prefab (re-export)
+
+GameObjects are matched by `FormaId.nodeId`. The importer stores in each `FormaId.managedPaths` the `managed` paths of the last import. On a
+re-import it:
+
+- **Rewrites only managed properties**: for each node, the paths listed in `managed[nodeId]` (name, rect, image color / raycast, corner-radius
+  sprite, outline, `canvasGroupAlpha`, text value / size / color / alignment / bold, layout group, scroll, and the fields of each
+  `components.<Type>` the bundle carries). Bold is the only part of a text's font style that is Forma's: font asset, italic, etc. stay.
+- **Reconciles what disappeared**: a path in the previous `managedPaths` that is no longer managed removes what the importer created for it
+  (`Outline`, the generated sprite, `CanvasGroup`, layout group, the Forma component). A sprite assigned by hand is never replaced or cleared
+  (reported as preserved); a theme binding whose token is gone is removed.
+- **Never removes developer content**: extra components (scripts, listeners), child GameObjects without a `FormaId`, fields of Forma
+  components the bundle does not carry (selected marker, active indicator, split dialog, icon provider, an assigned `panel`) and the
+  `FormaScreen` / simulated source on the root stay as they are.
+- **Creates new nodes** under their parent (a node id the Prefab does not know) and orders the design's siblings by `siblingIndex` inside the
+  positions the design's nodes already occupy; developer children keep their place.
+- **Removed nodes**: a node the bundle no longer has is deleted only if it and its whole subtree hold nothing but Forma-managed components
+  (graphics, selectables, effects, layout, scroll, `Forma*`) and children that carry a `FormaId`, and no `Button` has persistent listeners.
+  Otherwise it is kept, active and untouched (with its subtree), and reported as *conservado: tiene contenido propio del desarrollador*.
+- **Reparenting**: if the design moved a node out of a parent it dropped, the node follows. If the developer moved a managed node under another
+  parent, that parent stays and its `rect` is not rewritten (it is relative to the design's parent); it is reported as a conflict.
+- **Fails safe**: invalid JSON, a `format` other than `forma.ugui-bundle/v1`, a `bundleVersion` other than `1`, a missing field, an unknown node
+  kind or component, duplicate ids or a broken parent order abort the import before any asset is touched; the error is logged and written to
+  the report. Before saving an update, the previous Prefab is copied to `.backup/`.
+
+`ImportReport` (`<Name>.import-report.json`): `status` (`created` / `updated` / `failed`), `error`, `bundlePath`, `bundleHash`, `prefabPath`,
+`themePath`, `backupPath`, `timestamp`, `assets`, and the lists `created`, `updated`, `removed`, `preserved`, `conflicts` and `warnings` of
+`{nodeId, name, message}`. A summary line is logged on every import.
+
 ## What the Unity side must implement
 
-Components: `FormaId` (stores the sync key), `FormaTheme` (ScriptableObject), `FormaTabs`,
-`FormaSelectable`, `FormaDragDrop`, `FormaStack`, `FormaSplit`, `FormaContextMenu`,
-`FormaTooltip`, `FormaSlot`, `FormaItemView`, `FormaEquipmentSlot`.
+Components: `FormaId` (stores the sync key and the last managed paths), `FormaTheme` (ScriptableObject), `FormaThemeBinding`,
+`FormaTabs`, `FormaSelectable`, `FormaDragDrop`, `FormaStack`, `FormaSplit`, `FormaContextMenu`,
+`FormaTooltip`, `FormaSlot`, `FormaItemView`, `FormaEquipmentSlot`, `FormaBoundText`.
 
 Interfaces: `IFormaDataSource` (a data source by `id`: rows, fields, change notification),
 `IFormaIntentHandler` (receives an intent `name` and its payload, answers accept/reject, may
 return refreshed data), plus the importer (bundle JSON to Prefab, update by `id`, honoring
-`managed`).
+`managed`; described above).

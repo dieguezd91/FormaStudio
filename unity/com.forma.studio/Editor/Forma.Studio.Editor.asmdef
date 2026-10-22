@@ -1,7 +1,11 @@
 {
   "name": "Forma.Studio.Editor",
   "rootNamespace": "Forma.Studio.Editor",
-  "references": ["Forma.Studio.Runtime"],
+  "references": [
+    "Forma.Studio.Runtime",
+    "UnityEngine.UI",
+    "Unity.TextMeshPro"
+  ],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

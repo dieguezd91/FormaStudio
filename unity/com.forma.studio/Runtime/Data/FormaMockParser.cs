@@ -19,6 +19,12 @@ namespace Forma.Studio
     {
         static int nextUid = 1;
 
+        /// <summary>
+        /// Parses any JSON document: objects become <c>Dictionary&lt;string, object&gt;</c>, arrays <c>List&lt;object&gt;</c>,
+        /// numbers <c>double</c>; strings, booleans and null map directly. Throws <see cref="FormaJsonException"/>.
+        /// </summary>
+        public static object ParseJson(string json) => new Reader(json).ReadDocument();
+
         /// <summary>Parses a JSON array of objects (a single object becomes a one-row list).</summary>
         public static List<FormaRecord> ParseRecords(string json)
         {

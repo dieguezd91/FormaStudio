@@ -1,9 +1,16 @@
+import { existsSync } from 'node:fs';
+import { createAiProviderFromEnv } from '@forma/ai';
 import { HOST, parsePort, resolveDataDir } from './config';
 import { buildServer } from './server';
 
 function fail(message: string): never {
   console.error(message);
   process.exit(1);
+}
+
+// Optional local configuration; variables already set in the environment win.
+for (const envFile of ['.env', '../../.env']) {
+  if (existsSync(envFile)) process.loadEnvFile(envFile);
 }
 
 let port: number;
@@ -13,7 +20,13 @@ try {
   fail(error instanceof Error ? error.message : String(error));
 }
 
-const app = buildServer({ dataDir: resolveDataDir(), logger: true });
+const ai = createAiProviderFromEnv();
+const app = buildServer({ dataDir: resolveDataDir(), logger: true, ai });
+app.log.info(
+  ai
+    ? 'AI features enabled (Gemini).'
+    : 'AI features disabled: set GOOGLE_GENERATIVE_AI_API_KEY to enable them.',
+);
 
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
   process.once(signal, () => {

@@ -46,6 +46,38 @@ export const payloadTooLarge = (limitBytes: number) =>
 export const forbiddenOrigin = () =>
   new AppError(403, 'forbiddenOrigin', 'Requests from this origin are not allowed.');
 
+export const aiUnavailable = () =>
+  new AppError(
+    503,
+    'aiUnavailable',
+    'Las funciones de IA están desactivadas porque falta la clave de la API de Gemini. ' +
+      'Define la variable de entorno GOOGLE_GENERATIVE_AI_API_KEY (puedes copiar .env.example a .env) ' +
+      'y reinicia el servicio local. El resto de la aplicación sigue funcionando sin IA.',
+  );
+
+/** Splits `path: message` strings produced by the AI validators into error issues. */
+const toIssue = (issue: string): ErrorIssue => {
+  const at = issue.indexOf(': ');
+  return at < 0 ? { path: '', message: issue } : { path: issue.slice(0, at), message: issue.slice(at + 2) };
+};
+
+export const aiInvalidOutput = (issues: string[]) =>
+  new AppError(
+    502,
+    'aiInvalidOutput',
+    'La IA devolvió una respuesta que no supera la validación, incluso tras reintentar. No se guardó nada.',
+    issues.slice(0, 20).map(toIssue),
+  );
+
+export const aiProviderError = (reason: string) =>
+  new AppError(
+    502,
+    'aiProviderError',
+    'No se pudo completar la llamada al proveedor de IA. Revisa la clave, la cuota y la conexión.',
+    undefined,
+    { reason: reason.slice(0, 300) },
+  );
+
 export interface ErrorBody {
   error: {
     code: string;

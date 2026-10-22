@@ -10,10 +10,13 @@
     "dev": "tsx watch src/main.ts",
     "start": "tsx src/main.ts",
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "ai:smoke": "tsx src/ai/smoke.ts"
   },
   "dependencies": {
+    "@forma/ai": "*",
     "@forma/design-core": "*",
+    "@forma/library": "*",
     "fastify": "^5.12.7",
     "zod": "^4.6.7"
   },

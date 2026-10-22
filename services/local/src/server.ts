@@ -1,10 +1,13 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import Fastify, { type FastifyInstance } from 'fastify';
+import type { AiProvider } from '@forma/ai';
+import { DEFAULT_AI_LIMITS } from './ai/limits';
 import { DB_FILE_NAME } from './config';
 import { registerCors } from './cors';
 import { openRepository } from './db';
 import { registerErrorHandling } from './errors';
+import { registerAiRoutes } from './routes/ai';
 import { registerDocumentRoutes } from './routes/document';
 import { registerProjectRoutes } from './routes/projects';
 import { registerProposalRoutes } from './routes/proposals';
@@ -26,6 +29,12 @@ export interface ServerOptions {
   /** Largest accepted source payload after decoding. */
   maxSourceBytes?: number;
   logger?: boolean;
+  /** AI provider (Gemini, or a mock in tests). Without one, AI routes answer 503 and nothing else changes. */
+  ai?: AiProvider | null;
+  /** Largest image/blob sent to the model, in bytes (§15.2). */
+  maxAiBlobBytes?: number;
+  /** Longest text source sent to the model, in characters. */
+  maxAiTextChars?: number;
 }
 
 function resolveDbPath({ dbPath, dataDir }: ServerOptions): string {
@@ -58,7 +67,16 @@ export function buildServer(options: ServerOptions = {}): FastifyInstance {
   const repo = openRepository(resolveDbPath(options));
   app.addHook('onClose', async () => repo.close());
 
-  const context: RouteContext = { repo, maxSourceBytes };
+  const context: RouteContext = {
+    repo,
+    maxSourceBytes,
+    ai: options.ai ?? null,
+    aiLimits: {
+      ...DEFAULT_AI_LIMITS,
+      ...(options.maxAiBlobBytes === undefined ? {} : { maxBlobBytes: options.maxAiBlobBytes }),
+      ...(options.maxAiTextChars === undefined ? {} : { maxTextChars: options.maxAiTextChars }),
+    },
+  };
   app.get('/health', async () => ({ ok: true }));
   registerProjectRoutes(app, context);
   registerDocumentRoutes(app, context);
@@ -66,6 +84,7 @@ export function buildServer(options: ServerOptions = {}): FastifyInstance {
   registerSourceRoutes(app, context);
   registerRequirementRoutes(app, context);
   registerProposalRoutes(app, context);
+  registerAiRoutes(app, context);
 
   return app;
 }

@@ -120,6 +120,21 @@ describe('proposals', () => {
     expect(await list(id)).toHaveLength(2);
   });
 
+  it('rejects adopting through PATCH: adoption only goes through the adopt route', async () => {
+    const app = server();
+    const { id } = await createProject(app);
+    const proposal = (await create(id)).json();
+    const response = await app.inject({
+      method: 'PATCH',
+      url: `/projects/${id}/proposals/${proposal.id}`,
+      payload: { status: 'adopted' },
+    });
+    expect(response.statusCode).toBe(400);
+    expect(response.json().error.code).toBe('badRequest');
+    expect((await list(id))[0]!.status).toBe('candidate');
+    expect((await getDocument(app, id)).revision).toBe(1);
+  });
+
   it('rejects an unknown status', async () => {
     const { id } = await createProject(server());
     const proposal = (await create(id)).json();

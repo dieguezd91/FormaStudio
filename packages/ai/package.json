@@ -1,0 +1,22 @@
+{
+  "name": "@forma/ai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./prompts": "./src/prompts/index.ts",
+    "./testing": "./src/testing.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^4.0.102",
+    "@forma/design-core": "*",
+    "@forma/library": "*",
+    "ai": "^7.0.148",
+    "zod": "^4.6.7"
+  }
+}

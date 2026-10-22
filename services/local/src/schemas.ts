@@ -133,5 +133,31 @@ export const createProposalBody = z.strictObject({
   document: z.unknown(),
   origin: proposalOriginSchema,
 });
-export const patchProposalBody = z.strictObject({ status: proposalStatusSchema });
+/** Adoption is a document replacement and therefore only happens through the adopt route. */
+export const patchProposalBody = z.strictObject({ status: z.enum(['candidate', 'discarded']) });
 export const listProposalsQuery = z.strictObject({ status: proposalStatusSchema.optional() });
+
+// AI
+export const MAX_AI_PROPOSALS = 5;
+
+/** Optional: without `sourceIds`, every project-scoped source is analysed (§15.2). */
+export const aiRequirementsBody = z
+  .strictObject({ sourceIds: z.array(nonEmpty(200)).max(100).optional() })
+  .optional();
+
+export const aiProposalsBody = z
+  .strictObject({
+    screenId: nonEmpty(200).optional(),
+    count: z.int().min(1).max(MAX_AI_PROPOSALS).default(3),
+    brief: z.string().trim().max(4000).optional(),
+  })
+  .optional();
+
+export const aiEditBody = z.strictObject({
+  instruction: nonEmpty(4000),
+  screenId: nonEmpty(200),
+  selectedNodeIds: z.array(nonEmpty(200)).max(200),
+  proposalIds: z.array(nonEmpty(200)).max(5).optional(),
+});
+
+export const aiImpactQuery = sourceChangesQuery;

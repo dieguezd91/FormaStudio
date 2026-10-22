@@ -1,3 +1,4 @@
+import type { AiProvider } from '@forma/ai';
 import {
   parseDocument,
   validateDocument,
@@ -6,10 +7,14 @@ import {
 } from '@forma/design-core';
 import { notFound, revisionConflict, unprocessable, type ErrorIssue } from '../errors';
 import type { Project, Repository, StoredDocument } from '../db';
+import type { AiLimits } from '../ai/limits';
 
 export interface RouteContext {
   repo: Repository;
   maxSourceBytes: number;
+  /** `null` when no API key is configured: AI routes answer 503, everything else works. */
+  ai: AiProvider | null;
+  aiLimits: AiLimits;
 }
 
 export interface ProjectParams {

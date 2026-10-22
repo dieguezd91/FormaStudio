@@ -6,6 +6,7 @@ import { Canvas } from './canvas/Canvas';
 import { ExplorePanel } from './explore/ExplorePanel';
 import { Inspector } from './inspector/Inspector';
 import { ModePlaceholder } from './ModePlaceholder';
+import { PlayMode } from './play/PlayMode';
 import { useEditorShortcuts } from './shortcuts';
 import { editorStore, useEditor, useUi } from './store';
 import { TopBar } from './TopBar';
@@ -131,9 +132,11 @@ export function EditorScreen({ projectId, projectName, serviceUp, onExit }: Edit
             </main>
             <Inspector />
           </>
+        ) : mode === 'test' ? (
+          <PlayMode />
         ) : (
           <main className="min-w-0 flex-1">
-            <ModePlaceholder mode={mode} />
+            <ModePlaceholder />
           </main>
         )}
       </div>

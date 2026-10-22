@@ -1,8 +1,8 @@
 import { createContext, useContext, type CSSProperties, type PointerEvent } from 'react';
 import { Image as ImageIcon, Lock } from 'lucide-react';
 import type { FormaDocument, FormaNode, FormaScreen } from '@forma/design-core';
-import { resolveItemPreview } from '../bindings';
-import { CLIPPING_TYPES, nodeCss } from './nodeStyle';
+import { resolveItemPreview } from '@forma/runtime';
+import { CLIPPING_TYPES, FILL_CENTERED, JUSTIFY, baseCss, iconHue, needsCentering } from './nodeStyle';
 
 export interface CanvasContextValue {
   doc: FormaDocument;
@@ -19,15 +19,6 @@ function useCanvas(): CanvasContextValue {
   const context = useContext(CanvasContext);
   if (!context) throw new Error('NodeView must be rendered inside a CanvasContext.');
   return context;
-}
-
-const JUSTIFY = { left: 'flex-start', center: 'center', right: 'flex-end' } as const;
-
-/** Stable pastel per icon path, so each mock item is recognisable without real art. */
-function iconHue(seed: string): number {
-  let hash = 0;
-  for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) % 360;
-  return hash;
 }
 
 function ItemPreview({ node }: { node: FormaNode }) {
@@ -73,13 +64,6 @@ function ItemPreview({ node }: { node: FormaNode }) {
   );
 }
 
-const FILL_CENTERED: CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  textAlign: 'center',
-};
-
 function NodeBody({ node }: { node: FormaNode }) {
   switch (node.type) {
     case 'text':
@@ -117,18 +101,6 @@ function NodeBody({ node }: { node: FormaNode }) {
   }
 }
 
-const needsCentering = (type: FormaNode['type']): boolean =>
-  type === 'button' || type === 'equipmentSlot' || type === 'contextMenu' || type === 'tooltip';
-
-const baseCss = (node: FormaNode, doc: FormaDocument): CSSProperties => {
-  const css = nodeCss(node, doc.tokens);
-  if (node.type === 'button' && css.background === undefined) css.background = 'rgb(255 255 255 / 0.08)';
-  if (node.type === 'image' && css.background === undefined) css.background = 'rgb(255 255 255 / 0.05)';
-  if (node.type === 'image' || node.type === 'equipmentSlot') css.border ??= '1px dashed rgb(255 255 255 / 0.25)';
-  if (node.type === 'contextMenu' || node.type === 'tooltip') css.border ??= '1px dashed rgb(255 255 255 / 0.25)';
-  return css;
-};
-
 export function NodeView({ nodeId }: { nodeId: string }) {
   const { doc, screen, hidden, selected, onNodePointerDown } = useCanvas();
   const node = screen.nodes[nodeId];
@@ -137,7 +109,7 @@ export function NodeView({ nodeId }: { nodeId: string }) {
   const isRoot = nodeId === screen.rootId;
   const isSelected = selected.has(nodeId);
   const css: CSSProperties = {
-    ...baseCss(node, doc),
+    ...baseCss(node, doc.tokens),
     ...(needsCentering(node.type) ? FILL_CENTERED : {}),
     overflow: CLIPPING_TYPES.has(node.type) ? 'hidden' : 'visible',
     ...(isRoot ? { left: 0, top: 0, width: screen.size.width, height: screen.size.height } : {}),

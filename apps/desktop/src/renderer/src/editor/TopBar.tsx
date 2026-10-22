@@ -45,15 +45,17 @@ function UndoRedo() {
   const undoEntry = history.undoStack.at(-1);
   const redoEntry = history.redoStack.at(-1);
   const state = editorStore.getState();
+  // Probar never touches the document, so history is frozen there.
+  const inDesign = useUi((ui) => ui.mode) === 'design';
   return (
     <div className="flex items-center">
       <Tooltip label={undoEntry ? `Deshacer: ${undoEntry.batch.label} (Ctrl+Z)` : 'Nada para deshacer'}>
-        <Button variant="ghost" size="icon" aria-label="Deshacer" disabled={!undoEntry} onClick={() => state.undo()}>
+        <Button variant="ghost" size="icon" aria-label="Deshacer" disabled={!inDesign || !undoEntry} onClick={() => state.undo()}>
           <Undo2 size={16} />
         </Button>
       </Tooltip>
       <Tooltip label={redoEntry ? `Rehacer: ${redoEntry.batch.label} (Ctrl+Shift+Z)` : 'Nada para rehacer'}>
-        <Button variant="ghost" size="icon" aria-label="Rehacer" disabled={!redoEntry} onClick={() => state.redo()}>
+        <Button variant="ghost" size="icon" aria-label="Rehacer" disabled={!inDesign || !redoEntry} onClick={() => state.redo()}>
           <Redo2 size={16} />
         </Button>
       </Tooltip>

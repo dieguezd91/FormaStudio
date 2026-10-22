@@ -51,3 +51,9 @@ unity/FormaSandbox/Temp/
 unity/FormaSandbox/Logs/
 unity/FormaSandbox/UserSettings/
 unity/FormaSandbox/obj/
+
+# Unity sandbox: sample copied in by the e2e script, generated e2e output (and the folder .meta files Unity writes for them)
+unity/FormaSandbox/Assets/Samples/
+unity/FormaSandbox/Assets/Samples.meta
+unity/FormaSandbox/Assets/FormaStudio/
+unity/FormaSandbox/Assets/FormaStudio.meta

@@ -1,0 +1,23 @@
+{
+  "name": "Forma.E2E.Tests",
+  "rootNamespace": "Forma.E2E",
+  "references": [
+    "Forma.Studio.Runtime",
+    "Forma.Studio.Editor",
+    "ExistingGame.Inventory",
+    "ExistingGame.FormaAdapter",
+    "UnityEngine.UI",
+    "Unity.TextMeshPro",
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": ["nunit.framework.dll"],
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

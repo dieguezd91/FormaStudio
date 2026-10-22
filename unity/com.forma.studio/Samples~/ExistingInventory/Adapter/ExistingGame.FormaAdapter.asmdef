@@ -1,0 +1,17 @@
+{
+  "name": "ExistingGame.FormaAdapter",
+  "rootNamespace": "ExistingGame.FormaAdapter",
+  "references": [
+    "Forma.Studio.Runtime",
+    "ExistingGame.Inventory"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -10,5 +10,12 @@
   },
   "dependencies": {
     "com.unity.ugui": "2.0.0"
-  }
+  },
+  "samples": [
+    {
+      "displayName": "Existing inventory",
+      "description": "A game with its own item system connected to a Forma inventory screen through one adapter.",
+      "path": "Samples~/ExistingInventory"
+    }
+  ]
 }

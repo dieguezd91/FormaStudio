@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import type { AiProvider } from '@forma/ai';
-import { mockModel, type MockResponse } from '@forma/ai/testing';
+import { mockModel, toWireEdit, toWireProposals, type MockResponse } from '@forma/ai/testing';
 import {
   applyBatch,
   createSequentialIdGenerator,
@@ -10,11 +10,34 @@ import {
 import { insertEntry } from '@forma/library';
 import { PNG_BASE64, sampleDocument } from '../testing';
 
+type Domain = Record<string, unknown>;
+
+/**
+ * Scripts are written in domain terms (proposals with param records, edits with patch objects);
+ * the real model answers the wire schemas, so object answers are encoded the same way. Strings
+ * (raw text, or hand-written wire JSON) and other answers pass through unchanged.
+ */
+function encodeAnswer(answer: unknown): unknown {
+  if (typeof answer !== 'object' || answer === null) return answer;
+  const domain = answer as Domain;
+  if (Array.isArray(domain.proposals)) return toWireProposals(domain as { proposals: Domain[] });
+  if (Array.isArray(domain.operations)) return toWireEdit(domain as Parameters<typeof toWireEdit>[0]);
+  return answer;
+}
+
+const encodeResponse = (response: MockResponse): MockResponse =>
+  typeof response === 'function'
+    ? async (call: never) => encodeAnswer(await (response as (call: never) => unknown)(call))
+    : encodeAnswer(response);
+
+/** Instant retries: overload backoff must not slow tests down. */
+export const TEST_PROVIDER_RETRY = { overloadedRetries: 1, backoffMs: 0 } as const;
+
 /** A provider whose text and vision models answer from scripts (see `mockModel`). */
 export function mockProvider(text: MockResponse[], vision: MockResponse[] = []) {
-  const model = mockModel(text);
-  const visionModel = mockModel(vision);
-  const ai: AiProvider = { id: 'mock', model, visionModel };
+  const model = mockModel(text.map(encodeResponse));
+  const visionModel = mockModel(vision.map(encodeResponse));
+  const ai: AiProvider = { id: 'mock', model, visionModel, providerRetry: TEST_PROVIDER_RETRY };
   return { ai, model, visionModel };
 }
 

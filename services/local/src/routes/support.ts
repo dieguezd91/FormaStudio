@@ -1,4 +1,4 @@
-import type { AiProvider } from '@forma/ai';
+import type { AiProvider, AiStatus } from '@forma/ai';
 import {
   parseDocument,
   validateDocument,
@@ -14,6 +14,8 @@ export interface RouteContext {
   maxSourceBytes: number;
   /** `null` when no API key is configured: AI routes answer 503, everything else works. */
   ai: AiProvider | null;
+  /** What `GET /ai/status` reports; `enabled: false` (kill switch) makes the AI routes answer 503 `aiDisabled`. */
+  aiStatus: AiStatus;
   aiLimits: AiLimits;
   /** Folder of the Unity package `com.forma.studio` that exported projects reference. */
   unityPackagePath: string;

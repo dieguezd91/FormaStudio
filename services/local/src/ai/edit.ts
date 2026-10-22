@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import {
   buildLibraryCatalog,
-  editOutputSchema,
+  editWire,
   generateValidated,
   type AiProvider,
   type EditItem,
@@ -256,7 +256,8 @@ export async function previewEdit(
   const label = `IA: ${request.instruction.slice(0, 80)}`;
   const outcome = await generateValidated({
     model: ai.model,
-    schema: editOutputSchema,
+    schema: editWire,
+    providerRetry: ai.providerRetry,
     schemaName: 'edit',
     system: EDIT_SYSTEM,
     messages: buildEditMessages({

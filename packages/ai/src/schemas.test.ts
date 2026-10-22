@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { z } from 'zod';
 import { listEntries } from '@forma/library';
 import { buildLibraryCatalog } from './catalog';
 import { editOutputSchema, proposalsOutputSchema } from './schemas';
@@ -7,11 +6,6 @@ import { editOutputSchema, proposalsOutputSchema } from './schemas';
 const edit = (operations: unknown[]) => ({ explanation: 'ok', warnings: [], operations });
 
 describe('model output schemas', () => {
-  it('keeps the edit schema small enough for structured output', () => {
-    const json = JSON.stringify(z.toJSONSchema(editOutputSchema, { io: 'input' }));
-    expect(json.length).toBeLessThan(40_000);
-  });
-
   it('accepts design-core operations and library insertions', () => {
     const parsed = editOutputSchema.safeParse(
       edit([

@@ -1,5 +1,14 @@
-import { generateText, NoObjectGeneratedError, Output, type LanguageModel, type ModelMessage } from 'ai';
-import type { z } from 'zod';
+import {
+  generateText,
+  NoObjectGeneratedError,
+  Output,
+  type FlexibleSchema,
+  type LanguageModel,
+  type ModelMessage,
+} from 'ai';
+import { DEFAULT_PROVIDER_RETRY, type ProviderRetryPolicy } from './provider';
+import { classifyProviderError } from './provider-error';
+import { WireValidationError } from './wire/json-schema';
 
 export type Validation<R> = { ok: true; value: R } | { ok: false; issues: string[] };
 
@@ -11,25 +20,20 @@ export class AiOutputError extends Error {
   }
 }
 
-/** The provider call itself failed (network, quota, auth, timeout). */
-export class AiProviderError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'AiProviderError';
-  }
-}
-
-export interface GenerateValidatedOptions<S extends z.ZodType, R> {
+export interface GenerateValidatedOptions<T, R> {
   model: LanguageModel;
-  schema: S;
+  /** A Zod schema, or a `jsonSchema()` whose `validate` maps the answer (see `wireSchema`). */
+  schema: FlexibleSchema<T>;
   schemaName?: string;
   system: string;
   messages: ModelMessage[];
   /** Domain validation of the parsed output (e.g. against design-core); may transform it. */
-  validate?: (output: z.output<S>) => Validation<R>;
+  validate?: (output: T) => Validation<R>;
   /** Extra attempts after an invalid answer, each told what was wrong. Defaults to 1. */
   retries?: number;
   timeoutMs?: number;
+  /** Retry of transient provider overload (503). Defaults to {@link DEFAULT_PROVIDER_RETRY}. */
+  providerRetry?: ProviderRetryPolicy | undefined;
 }
 
 const DEFAULT_TIMEOUT_MS = 120_000;
@@ -42,50 +46,70 @@ const retryPrompt = (issues: string[]): string =>
     'Return a complete, corrected answer that fixes every issue.',
   ].join('\n');
 
+/** Issues behind a "did not match schema" failure, looking through the SDK's wrapper errors. */
 function schemaIssues(error: NoObjectGeneratedError): string[] {
-  const cause: unknown = error.cause;
-  const issues = (cause as { issues?: { path?: unknown[]; message?: string }[] } | undefined)?.issues;
-  if (Array.isArray(issues) && issues.length > 0) {
-    return issues.map((i) => `${(i.path ?? []).map(String).join('.') || '<root>'}: ${i.message ?? 'invalid'}`);
+  let cause: unknown = error.cause;
+  for (let depth = 0; depth < 4 && cause !== undefined && cause !== null; depth++) {
+    if (cause instanceof WireValidationError) return cause.issues;
+    const issues = (cause as { issues?: { path?: unknown[]; message?: string }[] }).issues;
+    if (Array.isArray(issues) && issues.length > 0) {
+      return issues.map((i) => `${(i.path ?? []).map(String).join('.') || '<root>'}: ${i.message ?? 'invalid'}`);
+    }
+    cause = (cause as { cause?: unknown }).cause;
   }
   return [error.message];
 }
 
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
 /**
- * Structured generation with a validation loop: the model answers a Zod schema, the answer is
+ * Structured generation with a validation loop: the model answers a schema, the answer is
  * validated again by the caller's domain checks, and an invalid answer is retried with the issues
  * appended. Never parses free text and never returns unvalidated data.
+ *
+ * Requests to the provider are bounded: the AI SDK's own retries are off (`maxRetries: 0`), a
+ * provider error ends the call as a classified `AiProviderError` (no validation retry), and only
+ * a 503/overloaded answer is retried, at most `providerRetry.overloadedRetries` times in total
+ * for the whole call. Worst case: `retries + 1 + overloadedRetries` requests.
  */
-export async function generateValidated<S extends z.ZodType, R = z.output<S>>(
-  options: GenerateValidatedOptions<S, R>,
-): Promise<R> {
+export async function generateValidated<T, R = T>(options: GenerateValidatedOptions<T, R>): Promise<R> {
   const { model, schema, system, validate, schemaName, timeoutMs = DEFAULT_TIMEOUT_MS } = options;
+  const policy = options.providerRetry ?? DEFAULT_PROVIDER_RETRY;
   const attempts = (options.retries ?? 1) + 1;
+  let overloadRetriesLeft = policy.overloadedRetries;
   let messages = options.messages;
   let issues: string[] = [];
 
-  for (let attempt = 1; attempt <= attempts; attempt++) {
-    let text: string;
-    let output: z.output<S> | undefined;
-    try {
-      const result = await generateText({
-        model,
-        instructions: system,
-        messages,
-        output: Output.object({ schema, ...(schemaName === undefined ? {} : { name: schemaName }) }),
-        timeout: timeoutMs,
-      });
-      text = result.text;
-      output = result.output as z.output<S>;
-    } catch (error) {
-      if (!NoObjectGeneratedError.isInstance(error)) {
-        throw new AiProviderError(error instanceof Error ? error.message : String(error));
+  const callModel = async (): Promise<{ text: string; output?: T }> => {
+    for (;;) {
+      try {
+        const result = await generateText({
+          model,
+          instructions: system,
+          messages,
+          output: Output.object({ schema, ...(schemaName === undefined ? {} : { name: schemaName }) }),
+          timeout: timeoutMs,
+          maxRetries: 0,
+        });
+        return { text: result.text, output: result.output as T };
+      } catch (error) {
+        if (NoObjectGeneratedError.isInstance(error)) {
+          issues = schemaIssues(error);
+          return { text: error.text ?? '' };
+        }
+        const classified = classifyProviderError(error);
+        if (classified.kind === 'overloaded' && overloadRetriesLeft > 0) {
+          overloadRetriesLeft--;
+          if (policy.backoffMs > 0) await sleep(policy.backoffMs);
+          continue;
+        }
+        throw classified;
       }
-      text = error.text ?? '';
-      issues = schemaIssues(error);
-      output = undefined;
     }
+  };
 
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    const { text, output } = await callModel();
     if (output !== undefined) {
       if (validate === undefined) return output as unknown as R;
       const validated = validate(output);

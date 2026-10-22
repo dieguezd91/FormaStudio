@@ -3,7 +3,7 @@ import {
   AiProviderError,
   buildLibraryCatalog,
   generateValidated,
-  proposalsOutputSchema,
+  proposalsWire,
   type AiProvider,
   type CompositionPlan,
 } from '@forma/ai';
@@ -61,7 +61,8 @@ export async function generateProposals(
   ): Promise<Candidate[]> =>
     generateValidated({
       model: ai.model,
-      schema: proposalsOutputSchema,
+      schema: proposalsWire,
+      providerRetry: ai.providerRetry,
       schemaName: 'proposals',
       system: PROPOSALS_SYSTEM,
       messages: buildProposalsMessages({

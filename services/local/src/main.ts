@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { createAiProviderFromEnv } from '@forma/ai';
+import { resolveAiFromEnv } from '@forma/ai';
 import { HOST, parsePort, resolveDataDir } from './config';
 import { buildServer } from './server';
 
@@ -20,12 +20,15 @@ try {
   fail(error instanceof Error ? error.message : String(error));
 }
 
-const ai = createAiProviderFromEnv();
-const app = buildServer({ dataDir: resolveDataDir(), logger: true, ai });
+// The only place that reads the environment for AI; tests build servers with an injected provider.
+const { provider: ai, status: aiStatus } = resolveAiFromEnv();
+const app = buildServer({ dataDir: resolveDataDir(), logger: true, ai, aiStatus });
 app.log.info(
-  ai
-    ? 'AI features enabled (Gemini).'
-    : 'AI features disabled: set GOOGLE_GENERATIVE_AI_API_KEY to enable them.',
+  aiStatus.reason === 'disabled'
+    ? 'AI features switched off (FORMA_AI_ENABLED=false).'
+    : aiStatus.reason === 'missingKey'
+      ? 'AI features disabled: set GOOGLE_GENERATIVE_AI_API_KEY to enable them.'
+      : `AI features enabled (Gemini, model ${aiStatus.model}).`,
 );
 
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {

@@ -229,8 +229,19 @@ describe('POST /projects/:id/ai/edit', () => {
   });
 
   it('retries once when an operation does not match the design-core schema', async () => {
+    const bogusPatch = {
+      ...modelAnswer([]),
+      operations: [
+        {
+          type: 'updateNode',
+          screenId: SCREEN_ID,
+          nodeId: 'x',
+          patch: [{ section: 'style', key: 'bogus', number: 1 }],
+        },
+      ],
+    };
     const t = await setup([
-      () => modelAnswer([{ type: 'updateNode', screenId: SCREEN_ID, nodeId: 'x', patch: { bogus: 1 } }]),
+      () => JSON.stringify(bogusPatch),
       (ids) => modelAnswer([fill(ids.buttonId)]),
     ]);
     const response = await edit(t.app, t.projectId);

@@ -2,9 +2,11 @@ import { z } from 'zod';
 import { operationSchema, type Operation } from '@forma/design-core';
 
 /**
- * Contracts the model must answer. They are deliberately smaller than the design-core schemas
- * (the full operation schema is ~160 KB of JSON Schema); everything the model returns is
- * validated again against design-core and the library before it is used.
+ * Contracts the model's answers must satisfy once decoded. They are the strict, server-side
+ * validation and are NOT sent to the model: Gemini rejects several constructs they use (limits,
+ * `additionalProperties`, recursive `z.json()`), so the model answers the simpler wire schemas in
+ * `./wire`, which are mapped to these. Everything is validated again against design-core and the
+ * library before it is used.
  */
 
 const text = (max: number) => z.string().min(1).max(max);

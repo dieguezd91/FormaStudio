@@ -1,7 +1,7 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import Fastify, { type FastifyInstance } from 'fastify';
-import type { AiProvider } from '@forma/ai';
+import { aiStatusFor, type AiProvider, type AiStatus } from '@forma/ai';
 import { DEFAULT_AI_LIMITS } from './ai/limits';
 import { DB_FILE_NAME } from './config';
 import { registerCors } from './cors';
@@ -33,6 +33,11 @@ export interface ServerOptions {
   logger?: boolean;
   /** AI provider (Gemini, or a mock in tests). Without one, AI routes answer 503 and nothing else changes. */
   ai?: AiProvider | null;
+  /**
+   * Reported by `GET /ai/status`. `enabled: false` switches AI off even if `ai` is given. Derived
+   * from `ai` when absent; the environment is only read by `main.ts`, never here.
+   */
+  aiStatus?: AiStatus;
   /** Largest image/blob sent to the model, in bytes (§15.2). */
   maxAiBlobBytes?: number;
   /** Longest text source sent to the model, in characters. */
@@ -75,6 +80,7 @@ export function buildServer(options: ServerOptions = {}): FastifyInstance {
     repo,
     maxSourceBytes,
     ai: options.ai ?? null,
+    aiStatus: options.aiStatus ?? aiStatusFor(options.ai ?? null),
     unityPackagePath: options.unityPackagePath
       ? forwardSlashes(options.unityPackagePath)
       : resolveUnityPackagePath(),

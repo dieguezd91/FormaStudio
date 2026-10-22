@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import {
   generateValidated,
-  requirementsOutputSchema,
+  requirementsWire,
   type AiProvider,
   type RequirementsOutput,
 } from '@forma/ai';
@@ -220,7 +220,8 @@ export async function extractRequirements(
 
   const reviewed = await generateValidated({
     model: images.length > 0 ? ai.visionModel : ai.model,
-    schema: requirementsOutputSchema,
+    schema: requirementsWire,
+    providerRetry: ai.providerRetry,
     schemaName: 'requirements',
     system: REQUIREMENTS_SYSTEM,
     messages: buildRequirementsMessages({ documents, images }),

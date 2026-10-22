@@ -39,13 +39,21 @@ service data directory outside the synced folder) to avoid sync churn and databa
 
 ## AI (Gemini)
 
-AI features live in the local service and are off until a key is configured. Copy `.env.example` to
-`.env` and set `GOOGLE_GENERATIVE_AI_API_KEY`; without it the AI routes answer
-`503 { error: { code: "aiUnavailable" } }` and everything else works.
+AI features live in the local service and are optional. They are off until a key is configured:
+copy `.env.example` to `.env` and set `GOOGLE_GENERATIVE_AI_API_KEY`; without it the AI routes
+answer `503 { error: { code: "aiUnavailable" } }` and everything else works. `FORMA_AI_ENABLED=false`
+switches AI off even with a key (`503 aiDisabled`, nothing is sent to Google). `GET /ai/status`
+reports `{ enabled, configured, provider, model, visionModel, reason? }` without secrets.
+
+A Google AI Pro / Google One subscription does **not** include API usage: a key without billing runs
+on the API free tier (a small daily quota per model). Quota (`aiQuotaExceeded`, 429), overload
+(`aiOverloaded`, 503, retried once) and rejected-request (`aiRequestRejected`) errors are reported
+separately with Spanish messages. Details, the error table and the Gemini schema rules: [docs/ai.md](docs/ai.md).
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `GOOGLE_GENERATIVE_AI_API_KEY` | – | Enables AI (get one at <https://aistudio.google.com/apikey>) |
+| `FORMA_AI_ENABLED` | `true` | Kill switch: `false` or `0` disables AI even if a key exists |
 | `FORMA_AI_MODEL` | `gemini-3.8-flash` | Model for text and structured output |
 | `FORMA_AI_VISION_MODEL` | `FORMA_AI_MODEL` | Model used when a request includes images |
 
@@ -58,9 +66,13 @@ Routes (all under `/projects/:id`):
 | `POST /ai/edit` `{ instruction, screenId, selectedNodeIds, proposalIds? }` | Preview a natural-language edit as an operation batch; apply it with `POST /document/batches` |
 | `GET /ai/impact?since=` | Requirements, proposals and screens affected by source changes (no model) |
 
+Also `GET /ai/status` (global, not under `/projects/:id`).
+
 What leaves the machine: only the sources named in the request (or, by default, project-scoped
 sources), text up to 200 000 characters and images up to 5 MiB each (at most 8). PDFs without
 text are skipped. Document content is never logged. Model output is always validated again with
 the design-core and library schemas before anything is stored.
 
-Tests use scripted AI SDK mock models (`@forma/ai/testing`); no key or network is needed.
+Tests use scripted AI SDK mock models (`@forma/ai/testing`); no key or network is needed and `.env`
+is never loaded by them. `npm run ai:smoke -w @forma/local-service` is the only live check; it stops
+at the first provider error and prints how many API requests it sent.

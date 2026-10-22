@@ -55,6 +55,15 @@ export const aiUnavailable = () =>
       'y reinicia el servicio local. El resto de la aplicación sigue funcionando sin IA.',
   );
 
+export const aiDisabled = () =>
+  new AppError(
+    503,
+    'aiDisabled',
+    'Las funciones de IA están desactivadas (FORMA_AI_ENABLED=false). ' +
+      'Quita la variable o ponla en true y reinicia el servicio local para volver a usarlas. ' +
+      'El resto de la aplicación sigue funcionando sin IA.',
+  );
+
 /** Splits `path: message` strings produced by the AI validators into error issues. */
 const toIssue = (issue: string): ErrorIssue => {
   const at = issue.indexOf(': ');
@@ -73,9 +82,67 @@ export const aiProviderError = (reason: string) =>
   new AppError(
     502,
     'aiProviderError',
-    'No se pudo completar la llamada al proveedor de IA. Revisa la clave, la cuota y la conexión.',
+    'No se pudo completar la llamada al proveedor de IA. Revisa la conexión y vuelve a intentarlo.',
     undefined,
     { reason: reason.slice(0, 300) },
+  );
+
+/** 400 from the provider: the request itself was refused, so retrying cannot help. */
+export const aiRequestRejected = (providerMessage: string | undefined) =>
+  new AppError(
+    502,
+    'aiRequestRejected',
+    'Gemini rechazó el formato del pedido (no es un problema de tu clave ni de tu cuota). ' +
+      'No se reintentó. Si persiste, es un error de la aplicación: avisa con el detalle.',
+    undefined,
+    { ...(providerMessage === undefined ? {} : { providerMessage }) },
+  );
+
+export const aiAuthFailed = () =>
+  new AppError(
+    502,
+    'aiAuthFailed',
+    'Gemini indica que la clave no es válida o no tiene acceso al modelo. ' +
+      'Revisa GOOGLE_GENERATIVE_AI_API_KEY (puedes crear una en Google AI Studio) y reinicia el servicio local.',
+  );
+
+export interface QuotaInfo {
+  freeTier?: boolean | undefined;
+  daily?: boolean | undefined;
+  retryAfterSeconds?: number | undefined;
+}
+
+export const aiQuotaExceeded = ({ freeTier = false, daily = false, retryAfterSeconds }: QuotaInfo) =>
+  new AppError(
+    429,
+    'aiQuotaExceeded',
+    [
+      freeTier
+        ? `Se agotó la cuota ${daily ? 'diaria ' : ''}del nivel gratuito de la API de Gemini.`
+        : 'Se agotó la cuota de la API de Gemini.',
+      ...(retryAfterSeconds === undefined ? [] : [`Puedes reintentar en ${retryAfterSeconds} s.`]),
+      'Una suscripción a Google AI Pro o Google One no incluye cuota de API:',
+      'espera a que se renueve o habilita la facturación del proyecto en Google AI Studio.',
+    ].join(' '),
+    undefined,
+    { freeTier, daily, ...(retryAfterSeconds === undefined ? {} : { retryAfterSeconds }) },
+  );
+
+export const aiOverloaded = (retryAfterSeconds?: number) =>
+  new AppError(
+    503,
+    'aiOverloaded',
+    'El modelo de Gemini está saturado, probá en unos minutos.' +
+      (retryAfterSeconds === undefined ? '' : ` Google sugiere esperar ${retryAfterSeconds} s.`),
+    undefined,
+    retryAfterSeconds === undefined ? undefined : { retryAfterSeconds },
+  );
+
+export const aiTimeout = () =>
+  new AppError(
+    504,
+    'aiTimeout',
+    'Gemini tardó demasiado en responder. Vuelve a intentarlo; si el pedido es muy grande, redúcelo.',
   );
 
 export interface ErrorBody {

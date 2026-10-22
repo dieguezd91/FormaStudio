@@ -10,7 +10,8 @@ export type StartIntent = 'scratch' | 'template' | 'ai';
 
 export interface OpenOptions {
   tab: ExploreTab;
-  aiNotice: boolean;
+  /** Show the guided AI strip (adjuntar → analizar → generar). */
+  guide: boolean;
 }
 
 const INTENTS: Record<
@@ -19,22 +20,22 @@ const INTENTS: Record<
 > = {
   ai: {
     title: 'Crear con IA',
-    body: 'Contanos qué necesitás y sumá tus referencias. La generación con IA llega pronto: hoy ya podés guardar tus documentos e imágenes.',
-    open: { tab: 'references', aiNotice: true },
+    body: 'Subí tu documentación y tus referencias: la IA extrae los requisitos y propone alternativas que podés comparar, probar y adoptar. Necesita una clave de Gemini en el servicio local; sin ella seguís trabajando a mano.',
+    open: { tab: 'references', guide: true },
     icon: Sparkles,
     variant: 'default',
   },
   template: {
     title: 'Usar plantilla',
     body: 'Elegí una solución lista según la función que necesitás, por ejemplo un inventario con pestañas, y editala a tu gusto.',
-    open: { tab: 'library', aiNotice: false },
+    open: { tab: 'library', guide: false },
     icon: LayoutTemplate,
     variant: 'secondary',
   },
   scratch: {
     title: 'Empezar desde cero',
     body: 'Una pantalla vacía de 1920 × 1080 para armar tu interfaz paso a paso.',
-    open: { tab: 'layers', aiNotice: false },
+    open: { tab: 'layers', guide: false },
     icon: PencilRuler,
     variant: 'outline',
   },
@@ -140,7 +141,7 @@ export function StartScreen({ serviceUp, onOpen }: StartScreenProps) {
               <button
                 type="button"
                 data-testid="recent-project"
-                onClick={() => onOpen(project, { tab: 'layers', aiNotice: false })}
+                onClick={() => onOpen(project, { tab: 'layers', guide: false })}
                 className="flex w-full items-center justify-between gap-4 rounded-lg border border-border bg-card px-4 py-3 text-left transition-colors hover:bg-accent"
               >
                 <span className="truncate font-medium">{project.name}</span>

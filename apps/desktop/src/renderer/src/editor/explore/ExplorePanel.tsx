@@ -1,6 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HierarchyPanel } from '../hierarchy/HierarchyPanel';
 import { LibraryPanel } from '../library/LibraryPanel';
+import { ProposalsPanel } from '../ai/ProposalsPanel';
+import { RequirementsPanel } from '../ai/RequirementsPanel';
 import { ReferencesPanel } from '../references/ReferencesPanel';
 import { useUi, type ExploreTab } from '../store';
 
@@ -14,10 +16,12 @@ export function ExplorePanel() {
       className="flex w-80 shrink-0 flex-col border-r border-border bg-card"
     >
       <Tabs value={tab} onValueChange={(value) => setTab(value as ExploreTab)} className="flex min-h-0 flex-1 flex-col">
-        <TabsList aria-label="Explorar" className="shrink-0 border-b border-border p-2">
+        <TabsList aria-label="Explorar" className="shrink-0 flex-wrap border-b border-border p-2">
           <TabsTrigger value="layers">Capas</TabsTrigger>
           <TabsTrigger value="library">Biblioteca</TabsTrigger>
           <TabsTrigger value="references">Referencias</TabsTrigger>
+          <TabsTrigger value="requirements">Requisitos</TabsTrigger>
+          <TabsTrigger value="proposals">Propuestas</TabsTrigger>
         </TabsList>
         <div className="min-h-0 flex-1 overflow-y-auto">
           <TabsContent value="layers">
@@ -28,6 +32,12 @@ export function ExplorePanel() {
           </TabsContent>
           <TabsContent value="references">
             <ReferencesPanel />
+          </TabsContent>
+          <TabsContent value="requirements">
+            <RequirementsPanel />
+          </TabsContent>
+          <TabsContent value="proposals">
+            <ProposalsPanel />
           </TabsContent>
         </div>
       </Tabs>

@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { FileText, Trash2, Upload } from 'lucide-react';
 import { api, isApiError } from '@/api';
 import type { NewSource, SourceIntent, SourceMeta, SourceScopeLevel } from '@/api/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input, Select, Textarea } from '@/components/ui/input';
+import { aiStore, useAi } from '../ai/store';
 import { messageOf } from '../session';
 import { useEditor } from '../store';
 import { bytesToBase64, classifyFile, scopeFor } from './files';
@@ -18,40 +19,6 @@ const INTENTS: { id: SourceIntent; label: string }[] = [
 ];
 
 const SCOPE_LABEL = { project: 'Proyecto', screen: 'Pantalla', node: 'Elemento', proposal: 'Propuesta' } as const;
-
-function useSources(projectId: string | null) {
-  const [sources, setSources] = useState<SourceMeta[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  const reload = useCallback(async () => {
-    if (!projectId) return;
-    await api.listSources(projectId).then(
-      (list) => {
-        setSources(list);
-        setError(null);
-      },
-      (e: unknown) => setError(messageOf(e)),
-    );
-  }, [projectId]);
-
-  useEffect(() => {
-    if (!projectId) return;
-    let current = true;
-    void api.listSources(projectId).then(
-      (list) => {
-        if (!current) return;
-        setSources(list);
-        setError(null);
-      },
-      (e: unknown) => current && setError(messageOf(e)),
-    );
-    return () => {
-      current = false;
-    };
-  }, [projectId]);
-
-  return { sources, error, reload };
-}
 
 function Thumbnail({ projectId, source }: { projectId: string; source: SourceMeta }) {
   if (source.mimeType.startsWith('image/') && source.hasBlob) {
@@ -138,7 +105,10 @@ export function ReferencesPanel() {
   const activeScreenId = useEditor((state) => state.activeScreenId);
   const selection = useEditor((state) => state.selection);
   const notify = useEditor((state) => state.notify);
-  const { sources, error, reload } = useSources(projectId);
+  const sources = useAi((state) => state.sources);
+  const error = useAi((state) => state.sourcesError);
+  // Sources feed the AI steps too, so every change goes through the AI store (which also checks impact).
+  const reload = () => aiStore.getState().sourcesChanged();
 
   const [mode, setMode] = useState<'document' | 'image'>('document');
   const [title, setTitle] = useState('');
@@ -226,8 +196,8 @@ export function ReferencesPanel() {
   return (
     <div className="space-y-4 p-3" data-testid="references-panel">
       <p className="text-xs text-muted-foreground">
-        Sumá documentos e imágenes que expliquen qué necesitás. Todavía no se analizan: la lectura con IA llega
-        más adelante.
+        Sumá documentos e imágenes que expliquen qué necesitás. Después podés analizarlos en la pestaña
+        Requisitos para extraer lo que piden, con la cita de dónde salió cada cosa.
       </p>
 
       <form onSubmit={(event) => void submit(event)} className="space-y-3 rounded-lg border border-border p-3">

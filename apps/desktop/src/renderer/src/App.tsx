@@ -31,7 +31,8 @@ export function App() {
     const ui = useUi.getState();
     ui.setMode('design');
     ui.setExploreTab(options.tab);
-    ui.setAiNotice(options.aiNotice);
+    ui.setGuide(options.guide);
+    ui.setAskOpen(false);
     setView({ kind: 'editor', projectId: project.id, projectName: project.name });
   };
 

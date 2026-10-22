@@ -1,7 +1,6 @@
 import { Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Tooltip } from '@/components/ui/tooltip';
-import { useActiveScreen, useEditor } from '../store';
+import { useActiveScreen, useEditor, useUi } from '../store';
 import { NodeInspector } from './NodeInspector';
 import { ScreenInspector } from './ScreenInspector';
 
@@ -29,11 +28,9 @@ export function Inspector() {
           <p className="text-xs text-muted-foreground">
             Arrastrá en el canvas para moverlos juntos, duplicalos con Ctrl+D o eliminalos con Supr.
           </p>
-          <Tooltip label="Disponible pronto">
-            <Button variant="secondary" size="sm" disabled>
-              <Sparkles size={14} /> Pedir a la IA
-            </Button>
-          </Tooltip>
+          <Button variant="secondary" size="sm" onClick={() => useUi.getState().setAskOpen(true)}>
+            <Sparkles size={14} /> Pedir a la IA
+          </Button>
         </div>
       ) : (
         <ScreenInspector doc={doc} screen={screen} />

@@ -1,4 +1,4 @@
-import { ArrowLeft, CircleCheck, CloudOff, Loader2, Plus, Redo2, Undo2 } from 'lucide-react';
+import { ArrowLeft, CircleCheck, CloudOff, Loader2, Plus, Redo2, Sparkles, Undo2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/input';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -69,6 +69,8 @@ export function TopBar({ onExit }: { onExit: () => void }) {
   const activeScreenId = useEditor((state) => state.activeScreenId);
   const mode = useUi((state) => state.mode);
   const setMode = useUi((state) => state.setMode);
+  const askOpen = useUi((state) => state.askOpen);
+  const setAskOpen = useUi((state) => state.setAskOpen);
 
   return (
     <header className="flex h-12 shrink-0 items-center gap-3 border-b border-border bg-card px-3">
@@ -139,9 +141,16 @@ export function TopBar({ onExit }: { onExit: () => void }) {
 
       <UndoRedo />
       <VersionsMenu />
-      <Tooltip label="Disponible pronto">
-        <Button variant="secondary" size="sm" disabled>
-          Pedir a la IA
+      <Tooltip label={mode === 'design' ? 'Pedir un cambio a la IA' : 'Volvé a Diseñar para pedir cambios'}>
+        <Button
+          variant="secondary"
+          size="sm"
+          data-testid="ask-ai-trigger"
+          aria-pressed={askOpen}
+          disabled={mode !== 'design'}
+          onClick={() => setAskOpen(!askOpen)}
+        >
+          <Sparkles size={14} /> Pedir a la IA
         </Button>
       </Tooltip>
     </header>

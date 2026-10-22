@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
-import { Info, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { AiGuide, ImpactNotice } from './ai/AiBanners';
+import { AskAiPanel } from './ai/AskAiPanel';
+import { aiStore } from './ai/store';
 import { Canvas } from './canvas/Canvas';
 import { ExplorePanel } from './explore/ExplorePanel';
 import { Inspector } from './inspector/Inspector';
@@ -41,28 +44,6 @@ function NoticeToast() {
   );
 }
 
-function AiNotice() {
-  const visible = useUi((state) => state.aiNotice);
-  const hide = useUi((state) => state.setAiNotice);
-  if (!visible) return null;
-  return (
-    <div
-      data-testid="ai-notice"
-      className="flex items-start gap-2 border-b border-border bg-primary/10 px-4 py-2 text-sm"
-    >
-      <Info size={16} className="mt-0.5 shrink-0 text-primary" />
-      <p className="flex-1">
-        <strong>Crear con IA todavía no está disponible.</strong> La generación llega en una próxima versión. Mientras
-        tanto, subí acá tus documentos e imágenes de referencia: quedan guardados con el proyecto para cuando esté
-        lista, y podés diseñar a mano o con la Biblioteca.
-      </p>
-      <Button variant="ghost" size="icon" className="h-6 w-6" aria-label="Cerrar" onClick={() => hide(false)}>
-        <X size={14} />
-      </Button>
-    </div>
-  );
-}
-
 interface EditorScreenProps {
   projectId: string;
   projectName: string;
@@ -81,6 +62,11 @@ export function EditorScreen({ projectId, projectName, serviceUp, onExit }: Edit
     void editorStore.getState().open(projectId, projectName);
     return () => editorStore.getState().close();
   }, [projectId, projectName]);
+
+  useEffect(() => {
+    void aiStore.getState().open(projectId);
+    return () => aiStore.getState().close();
+  }, [projectId]);
 
   useEditorShortcuts(status === 'ready' && mode === 'design');
 
@@ -122,7 +108,8 @@ export function EditorScreen({ projectId, projectName, serviceUp, onExit }: Edit
   return (
     <div className="flex h-full flex-col" data-testid="editor">
       <TopBar onExit={onExit} />
-      <AiNotice />
+      <AiGuide />
+      <ImpactNotice />
       <div className="flex min-h-0 flex-1">
         {mode === 'design' ? (
           <>
@@ -140,6 +127,7 @@ export function EditorScreen({ projectId, projectName, serviceUp, onExit }: Edit
           </main>
         )}
       </div>
+      <AskAiPanel />
       <NoticeToast />
     </div>
   );

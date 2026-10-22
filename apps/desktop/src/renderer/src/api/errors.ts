@@ -9,6 +9,12 @@ export type ApiErrorKind =
   | 'tooLarge'
   | 'invalid'
   | 'forbidden'
+  /** 503 from an AI route: no Gemini key is configured. Manual work is unaffected. */
+  | 'aiUnavailable'
+  /** 502 from an AI route: the provider failed or its output did not validate. */
+  | 'aiFailed'
+  /** The caller cancelled the request. */
+  | 'aborted'
   | 'server';
 
 export interface ApiErrorInit {
@@ -54,6 +60,21 @@ export function serviceUnavailableError(): ApiError {
   });
 }
 
+export const isAiUnavailable = (error: unknown): boolean =>
+  isApiError(error) && error.kind === 'aiUnavailable';
+
+export const isAborted = (error: unknown): boolean => isApiError(error) && error.kind === 'aborted';
+
+export function abortedError(): ApiError {
+  return new ApiError({ kind: 'aborted', status: 0, code: 'aborted', message: 'Solicitud cancelada.' });
+}
+
+export const AI_ENV_VAR = 'GOOGLE_GENERATIVE_AI_API_KEY';
+
+export const AI_UNAVAILABLE_MESSAGE =
+  `Las funciones de IA están desactivadas porque falta la clave de Gemini. Definí la variable de entorno ${AI_ENV_VAR} ` +
+  '(podés copiar .env.example a .env) y reiniciá el servicio local. El trabajo manual no se ve afectado.';
+
 const OPERATION_MESSAGES: Record<string, string> = {
   screenNotFound: 'la pantalla ya no existe',
   nodeNotFound: 'el elemento ya no existe',
@@ -72,13 +93,32 @@ export const operationReason = (code: string, fallback: string): string =>
   OPERATION_MESSAGES[code] ?? fallback;
 
 /** Maps the service error envelope onto a typed error with a Spanish message. */
-export function errorFromResponse(status: number, body: unknown): ApiError {
+export function errorFromResponse(
+  status: number,
+  body: unknown,
+  /** AI routes already answer in Spanish with the exact reason, so it is shown as is. */
+  options: { ai?: boolean } = {},
+): ApiError {
   const envelope = (body as { error?: { code?: string; message?: string; details?: unknown } } | null)
     ?.error;
   const code = envelope?.code ?? 'unknown';
   const serverMessage = envelope?.message;
   const details = envelope?.details as Record<string, unknown> | undefined;
   const base = { status, code, ...(serverMessage ? { serverMessage } : {}), ...(details ? { details } : {}) };
+
+  if (options.ai && status === 503 && code === 'aiUnavailable') {
+    return new ApiError({ ...base, kind: 'aiUnavailable', message: AI_UNAVAILABLE_MESSAGE });
+  }
+  if (options.ai && status === 502) {
+    return new ApiError({
+      ...base,
+      kind: 'aiFailed',
+      message: serverMessage ?? 'La IA no pudo completar la solicitud. No se guardó nada.',
+    });
+  }
+  if (options.ai && status === 422 && serverMessage) {
+    return new ApiError({ ...base, kind: 'rejected', message: serverMessage });
+  }
 
   if (status === 409) {
     return new ApiError({

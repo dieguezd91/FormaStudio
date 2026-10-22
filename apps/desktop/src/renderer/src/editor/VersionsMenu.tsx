@@ -98,7 +98,11 @@ export function VersionsMenu() {
           aria-expanded={open}
           aria-haspopup="menu"
           data-testid="versions-trigger"
-          onClick={toggle}
+          onClick={() => {
+            // Other flows (e.g. adopting a proposal) save versions too, so refresh when opening.
+            if (!open) void reload();
+            toggle();
+          }}
         >
           <HistoryIcon size={15} /> Versiones
           {approved ? (

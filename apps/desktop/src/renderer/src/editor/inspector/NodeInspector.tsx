@@ -7,7 +7,7 @@ import { Tooltip } from '@/components/ui/tooltip';
 import { actionLabelBatch, stackBatch, summarizeBehavior } from '../behaviors';
 import { updateNodeBatch } from '../batches';
 import { NODE_TYPE_LABELS } from '../canvas/nodeStyle';
-import { editorStore } from '../store';
+import { editorStore, useUi } from '../store';
 import { CommitInput, Field, NumberInput, Section } from './fields';
 import { StyleField, type StyleInput } from './StyleField';
 
@@ -315,11 +315,9 @@ export function NodeInspector({
       </div>
 
       <div className="flex flex-wrap gap-1.5 border-b border-border px-3 py-2">
-        <Tooltip label="Disponible pronto">
-          <Button variant="secondary" size="sm" disabled aria-label="Pedir a la IA">
-            <Sparkles size={14} /> Pedir a la IA
-          </Button>
-        </Tooltip>
+        <Button variant="secondary" size="sm" aria-label="Pedir a la IA" onClick={() => useUi.getState().setAskOpen(true)}>
+          <Sparkles size={14} /> Pedir a la IA
+        </Button>
         {!isRoot ? (
           <>
             <Tooltip label="Duplicar (Ctrl+D)">

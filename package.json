@@ -18,7 +18,8 @@
     "build": "npm run build -w @forma/desktop",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "typecheck": "tsc -p tsconfig.json && npm run typecheck --workspaces --if-present",
+    "e2e:unity": "tsx e2e/unity/run-13-1.ts",
+    "typecheck": "tsc -p tsconfig.json && tsc -p e2e/unity/tsconfig.json && npm run typecheck --workspaces --if-present",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

@@ -57,3 +57,6 @@ unity/FormaSandbox/Assets/Samples/
 unity/FormaSandbox/Assets/Samples.meta
 unity/FormaSandbox/Assets/FormaStudio/
 unity/FormaSandbox/Assets/FormaStudio.meta
+
+# Scenario 13.1 Unity e2e run output
+e2e/unity/artifacts/

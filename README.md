@@ -30,6 +30,7 @@ Requires Node >= 22.13 and npm.
 | `npm run typecheck` | `tsc` in every workspace |
 | `npm run lint` | ESLint (flat config) |
 | `npm run ai:smoke -w @forma/local-service` | Live Gemini smoke test (needs an API key) |
+| `npm run e2e:unity` | Scenario 13.1 end to end through a real Unity editor (see [docs/e2e-13.1.md](docs/e2e-13.1.md)) |
 
 ## OneDrive
 

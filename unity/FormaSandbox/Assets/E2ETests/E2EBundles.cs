@@ -20,6 +20,8 @@ namespace Forma.E2E
     {
         public const string BundleEnv = "FORMA_E2E_BUNDLE";
         public const string BundleV2Env = "FORMA_E2E_BUNDLE_V2";
+        /// <summary>Optional: the color the real V2 gives the <c>surfaceAlt</c> token; without it that check is skipped for a real V2.</summary>
+        public const string SurfaceAltEnv = "FORMA_E2E_V2_SURFACE_ALT";
         public const string Folder = "Assets/FormaStudio/Generated/E2E";
         public const string DefaultBundlePath = Folder + "/Inventario.forma.json";
         public const string FixtureFolder = "Packages/com.forma.studio/Tests/Editor/Fixtures/";
@@ -130,7 +132,38 @@ namespace Forma.E2E
             return json.Replace(OldSurfaceColor, NewSurfaceColor);
         }
 
-        public static string TitleNodeId(string bundleJson) => (string)FirstNodeOfKind(Parse(bundleJson), "text")["id"];
+        /// <summary>What a V2 changed in the design versus V1: the renamed node and the text node it added.</summary>
+        public sealed class DesignChanges
+        {
+            public string RenamedId, RenamedName, AddedId, AddedName, AddedText;
+        }
+
+        /// <summary>Works for the derived V2 and for a real re-export alike: it diffs the node lists of the two bundles.</summary>
+        public static DesignChanges DescribeChanges(string v1Json, string v2Json)
+        {
+            var before = Nodes(Parse(v1Json)).Cast<Dictionary<string, object>>().ToDictionary(n => (string)n["id"]);
+            var after = Nodes(Parse(v2Json)).Cast<Dictionary<string, object>>().ToList();
+            var renamed = after.FirstOrDefault(n => before.TryGetValue((string)n["id"], out var old) && (string)old["name"] != (string)n["name"]);
+            var added = after.FirstOrDefault(n => !before.ContainsKey((string)n["id"]) && (string)n["kind"] == "text");
+            Assert.IsNotNull(renamed, "V2 renames a node of V1");
+            Assert.IsNotNull(added, "V2 adds a text node");
+            return new DesignChanges
+            {
+                RenamedId = (string)renamed["id"],
+                RenamedName = (string)renamed["name"],
+                AddedId = (string)added["id"],
+                AddedName = (string)added["name"],
+                AddedText = (string)((Dictionary<string, object>)added["text"])["value"],
+            };
+        }
+
+        /// <summary>The color V2 gives <c>surfaceAlt</c>, or null when a real V2 does not say (see <see cref="SurfaceAltEnv"/>).</summary>
+        public static string ExpectedSurfaceAlt(bool standalone)
+        {
+            if (standalone) return NewSurfaceColor;
+            var value = Environment.GetEnvironmentVariable(SurfaceAltEnv);
+            return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+        }
 
         /// <summary>Design node id of the last (non-equipment) slot of the bundle, the one V2 removes.</summary>
         public static string LastSlotNodeId(string bundleJson) => LastSlotNodeId(Parse(bundleJson));

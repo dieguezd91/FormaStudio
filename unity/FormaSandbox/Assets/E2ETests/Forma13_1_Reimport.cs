@@ -15,7 +15,8 @@ namespace Forma.E2E
     /// <summary>
     /// Scenario 13.1, part 2: the design is exported again and the developer keeps everything. Reads what <see cref="Forma13_1_FirstImport"/>
     /// left in <see cref="E2EBundles.Folder"/>; run it after that fixture, in the same run or a later one.
-    /// Only the checks that depend on the standalone V2 edits run when <c>FORMA_E2E_BUNDLE_V2</c> is not set.
+    /// Without <c>FORMA_E2E_BUNDLE_V2</c> the V2 is derived from V1 (and also removes a slot); with it, the design changes are read from the
+    /// difference between the two bundles, and the new <c>surfaceAlt</c> color from <c>FORMA_E2E_V2_SURFACE_ALT</c> when that is set.
     /// </summary>
     [TestFixture, Category("E2E13_1")]
     public sealed class Forma13_1_Reimport
@@ -24,7 +25,7 @@ namespace Forma.E2E
         static bool standalone;
         static string v1Json;
         static string lastSlotId;
-        static string titleId;
+        static E2EBundles.DesignChanges changes;
         bool postprocessor;
 
         static string PrefabPath => FormaPrefabImporter.PrefabPathFor(bundlePath);
@@ -51,13 +52,13 @@ namespace Forma.E2E
 
             v1Json = File.ReadAllText(bundlePath);
             lastSlotId = E2EBundles.LastSlotNodeId(v1Json);
-            titleId = E2EBundles.TitleNodeId(v1Json);
             var external = E2EBundles.ExternalBundle(E2EBundles.BundleV2Env);
             standalone = external == null;
             if (standalone) E2EBundles.PlaceText(E2EBundles.BuildStandaloneV2(v1Json), bundlePath);
             else Assert.AreEqual(bundlePath, E2EBundles.PlaceExternal(external), "V2 must have the same file name as V1");
             TestContext.Out.WriteLine($"bundle v2: {(external ?? "derived from the V1 bundle (standalone)")} -> {bundlePath}");
             Assert.AreNotEqual(v1Json, File.ReadAllText(bundlePath), "V2 differs from V1");
+            changes = E2EBundles.DescribeChanges(v1Json, File.ReadAllText(bundlePath));
 
             var report = FormaPrefabImporter.Import(bundlePath);
 
@@ -65,10 +66,10 @@ namespace Forma.E2E
             Assert.AreEqual(ImportReport.StatusUpdated, report.status);
             Assert.AreEqual(0, report.conflicts.Count, string.Join("; ", report.conflicts.Select(c => c.message)));
             Assert.IsTrue(report.updated.Count > 0, "the report lists the updated nodes");
+            Assert.IsTrue(report.updated.Any(e => e.nodeId == changes.RenamedId), "the renamed node is reported as updated");
+            Assert.IsTrue(report.created.Any(e => e.nodeId == changes.AddedId), "the new node is reported as created");
             if (standalone)
             {
-                Assert.IsTrue(report.updated.Any(e => e.nodeId == titleId), "the renamed title is reported as updated");
-                Assert.IsTrue(report.created.Any(e => e.nodeId == E2EBundles.WeightNodeId), "the new node is reported as created");
                 Assert.IsTrue(report.preserved.Any(e => e.nodeId == lastSlotId && e.message.Contains("desarrollador")),
                     "the removed slot kept the developer's note, so it is preserved and reported");
             }
@@ -101,16 +102,19 @@ namespace Forma.E2E
         public void Reimport_AppliesTheDesignChanges()
         {
             RequireImported();
-            if (!standalone) Assert.Ignore("Design-specific checks only run against the derived V2 bundle.");
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
-            Find(prefab, titleId, out var title);
-            Assert.AreEqual(E2EBundles.RenamedTitle, title.name, "renamed node");
+            Find(prefab, changes.RenamedId, out var renamed);
+            Assert.AreEqual(changes.RenamedName, renamed.name, "renamed node");
+            if (standalone) Assert.AreEqual(E2EBundles.RenamedTitle, renamed.name);
 
-            Find(prefab, E2EBundles.WeightNodeId, out var weight);
-            Assert.AreEqual("Peso total", weight.name);
-            Assert.AreEqual("Peso total", weight.GetComponent<TMP_Text>().text, "the new text node");
+            Find(prefab, changes.AddedId, out var added);
+            Assert.AreEqual(changes.AddedName, added.name);
+            Assert.AreEqual("Peso total", added.name);
+            Assert.AreEqual(changes.AddedText, added.GetComponent<TMP_Text>().text, "the new text node");
 
-            var expected = ParseColor(E2EBundles.NewSurfaceColor);
+            var surfaceAlt = E2EBundles.ExpectedSurfaceAlt(standalone);
+            if (surfaceAlt == null) return; // a real V2 that did not announce its color token
+            var expected = ParseColor(surfaceAlt);
             var theme = AssetDatabase.LoadAssetAtPath<FormaTheme>(FormaPrefabImporter.ThemePathFor(bundlePath));
             Assert.IsTrue(theme.TryGetColor("surfaceAlt", out var token));
             AssertColor(expected, token, "theme token");

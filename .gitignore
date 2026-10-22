@@ -44,3 +44,10 @@ Thumbs.db
 
 # Agent tooling
 .atl/
+
+# Unity sandbox (unity/FormaSandbox): generated project folders
+unity/FormaSandbox/Library/
+unity/FormaSandbox/Temp/
+unity/FormaSandbox/Logs/
+unity/FormaSandbox/UserSettings/
+unity/FormaSandbox/obj/

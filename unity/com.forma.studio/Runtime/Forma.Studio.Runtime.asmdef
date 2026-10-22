@@ -1,7 +1,10 @@
 {
   "name": "Forma.Studio.Runtime",
   "rootNamespace": "Forma.Studio",
-  "references": [],
+  "references": [
+    "UnityEngine.UI",
+    "Unity.TextMeshPro"
+  ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

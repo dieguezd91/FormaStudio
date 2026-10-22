@@ -4,6 +4,8 @@
   "references": [
     "Forma.Studio.Runtime",
     "Forma.Studio.Editor",
+    "UnityEngine.UI",
+    "Unity.TextMeshPro",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],

@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "com.forma.studio": "file:../../com.forma.studio",
+    "com.unity.test-framework": "1.6.0",
+    "com.unity.ugui": "2.0.0",
+    "com.unity.modules.imageconversion": "1.0.0",
+    "com.unity.modules.jsonserialize": "1.0.0",
+    "com.unity.modules.ui": "1.0.0",
+    "com.unity.modules.uielements": "1.0.0"
+  },
+  "testables": [
+    "com.forma.studio"
+  ]
+}

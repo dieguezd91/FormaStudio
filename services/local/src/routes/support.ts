@@ -15,6 +15,8 @@ export interface RouteContext {
   /** `null` when no API key is configured: AI routes answer 503, everything else works. */
   ai: AiProvider | null;
   aiLimits: AiLimits;
+  /** Folder of the Unity package `com.forma.studio` that exported projects reference. */
+  unityPackagePath: string;
 }
 
 export interface ProjectParams {

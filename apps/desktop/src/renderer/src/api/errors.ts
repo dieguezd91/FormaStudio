@@ -97,7 +97,7 @@ export function errorFromResponse(
   status: number,
   body: unknown,
   /** AI routes already answer in Spanish with the exact reason, so it is shown as is. */
-  options: { ai?: boolean } = {},
+  options: { ai?: boolean; export?: boolean } = {},
 ): ApiError {
   const envelope = (body as { error?: { code?: string; message?: string; details?: unknown } } | null)
     ?.error;
@@ -118,6 +118,15 @@ export function errorFromResponse(
   }
   if (options.ai && status === 422 && serverMessage) {
     return new ApiError({ ...base, kind: 'rejected', message: serverMessage });
+  }
+
+  // Export routes answer 400/422 in Spanish with the exact reason (folder, manifest, document).
+  if (options.export && (status === 400 || status === 422) && serverMessage) {
+    return new ApiError({
+      ...base,
+      kind: status === 422 ? 'rejected' : 'invalid',
+      message: serverMessage,
+    });
   }
 
   if (status === 409) {

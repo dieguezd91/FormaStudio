@@ -149,3 +149,41 @@ describe('api client · AI', () => {
     expect(calls[4]?.[0]).toBe('http://x/projects/p/requirements');
   });
 });
+
+describe('api client · export', () => {
+  it('posts the analysis with the Unity folder only when there is one', async () => {
+    const fetch = vi.fn(async () => json(200, { report: {}, diff: null, unity: null }));
+    const client = createApiClient({ fetch });
+    await client.analyzeExport('p 1', 's1');
+    await client.analyzeExport('p 1', 's1', 'D:/Proyectos/Juego');
+    const bodies = fetch.mock.calls.map(
+      (call) => JSON.parse((call as unknown as [string, RequestInit])[1].body as string) as unknown,
+    );
+    expect(bodies).toEqual([{ screenId: 's1' }, { screenId: 's1', unityProjectPath: 'D:/Proyectos/Juego' }]);
+    expect((fetch.mock.calls[0] as unknown as [string])[0]).toMatch(/\/projects\/p%201\/exports\/ugui\/analyze$/);
+  });
+
+  it('unwraps the export history', async () => {
+    const client = createApiClient({ fetch: async () => json(200, { exports: [{ id: 'e1' }] }) });
+    await expect(client.listExports('p')).resolves.toEqual([{ id: 'e1' }]);
+  });
+
+  it('shows the Spanish reason of a refused export or an invalid folder as is', async () => {
+    const refused = createApiClient({
+      fetch: async () =>
+        json(422, { error: { code: 'invalidDocument', message: 'El nodo «Panel» referencia algo que no existe.' } }),
+    });
+    const error422 = (await refused
+      .exportUgui('p', { screenId: 's', unityProjectPath: '/juego' })
+      .catch((e: unknown) => e)) as ApiError;
+    expect(error422.kind).toBe('rejected');
+    expect(error422.message).toBe('El nodo «Panel» referencia algo que no existe.');
+
+    const badFolder = createApiClient({
+      fetch: async () => json(400, { error: { code: 'invalidExportPath', message: 'La carpeta «x» no existe.' } }),
+    });
+    const error400 = (await badFolder.installFormaPackage('p', 'x').catch((e: unknown) => e)) as ApiError;
+    expect(error400.kind).toBe('invalid');
+    expect(error400.message).toBe('La carpeta «x» no existe.');
+  });
+});

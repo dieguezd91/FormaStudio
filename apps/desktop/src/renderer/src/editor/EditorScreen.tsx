@@ -7,8 +7,8 @@ import { AskAiPanel } from './ai/AskAiPanel';
 import { aiStore } from './ai/store';
 import { Canvas } from './canvas/Canvas';
 import { ExplorePanel } from './explore/ExplorePanel';
+import { ExportMode } from './export/ExportMode';
 import { Inspector } from './inspector/Inspector';
-import { ModePlaceholder } from './ModePlaceholder';
 import { PlayMode } from './play/PlayMode';
 import { useEditorShortcuts } from './shortcuts';
 import { editorStore, useEditor, useUi } from './store';
@@ -122,9 +122,7 @@ export function EditorScreen({ projectId, projectName, serviceUp, onExit }: Edit
         ) : mode === 'test' ? (
           <PlayMode />
         ) : (
-          <main className="min-w-0 flex-1">
-            <ModePlaceholder />
-          </main>
+          <ExportMode key={projectId} />
         )}
       </div>
       <AskAiPanel />

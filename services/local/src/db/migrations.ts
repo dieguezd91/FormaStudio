@@ -116,6 +116,25 @@ export const MIGRATIONS: readonly Migration[] = [
       CREATE INDEX idx_proposals_project ON proposals(project_id, created_at);
     `,
   },
+  {
+    version: 2,
+    name: 'exports',
+    sql: `
+      CREATE TABLE exports (
+        id TEXT PRIMARY KEY,
+        project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+        screen_id TEXT NOT NULL,
+        target TEXT NOT NULL,
+        unity_project_path TEXT NOT NULL,
+        output_folder TEXT NOT NULL,
+        document_revision INTEGER NOT NULL,
+        bundle TEXT NOT NULL,
+        written TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      );
+      CREATE INDEX idx_exports_project ON exports(project_id, screen_id, created_at);
+    `,
+  },
 ];
 
 export function migrate(db: DatabaseSync, migrations: readonly Migration[] = MIGRATIONS): void {

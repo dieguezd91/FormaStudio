@@ -1,8 +1,22 @@
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 
 const dirname = fileURLToPath(new URL('.', import.meta.url));
+
+/** The folder picker for the Unity project; only the app's own window may ask for it. */
+function registerIpc(): void {
+  ipcMain.handle('forma:pick-folder', async (event): Promise<string | null> => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (!win) return null;
+    const options = {
+      title: 'Elegí la carpeta raíz de tu proyecto Unity',
+      properties: ['openDirectory' as const],
+    };
+    const result = await dialog.showOpenDialog(win, options);
+    return result.canceled ? null : (result.filePaths[0] ?? null);
+  });
+}
 
 function createWindow(): void {
   const win = new BrowserWindow({
@@ -37,6 +51,7 @@ function createWindow(): void {
 }
 
 void app.whenReady().then(() => {
+  registerIpc();
   createWindow();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

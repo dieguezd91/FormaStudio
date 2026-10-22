@@ -161,3 +161,81 @@ export interface ImpactReport {
   since: string | null;
   impacts: SourceImpact[];
 }
+
+// Export (Unity uGUI). Wire shapes of the service; kept local because the exporter package
+// pulls Node-only modules that must not end up in the renderer bundle.
+export type CompatibilityStatus = 'supported' | 'adapted' | 'approximate' | 'unavailable';
+
+export interface CompatibilityItem {
+  subject: {
+    nodeId?: string;
+    behavior?: string;
+    property?: string;
+    dataSourceId?: string;
+    intentName?: string;
+  };
+  status: CompatibilityStatus;
+  /** Spanish: the visual or functional effect in the target. */
+  impact: string;
+  /** Spanish: what can be done about it. */
+  action: string;
+  /** Every node the item applies to when identical findings were merged. */
+  nodeIds?: string[];
+}
+
+export interface CompatibilityReport {
+  items: CompatibilityItem[];
+  summary: {
+    counts: Record<CompatibilityStatus, number>;
+    youWillReceive: string[];
+    youMustConnect: string[];
+  };
+}
+
+export interface BundleDiff {
+  added: string[];
+  removed: string[];
+  changed: { nodeId: string; name: string; paths: string[] }[];
+  renamed: { nodeId: string; from: string; to: string }[];
+}
+
+/** What the service learned about a Unity project folder. */
+export interface UnityFacts {
+  unityVersion: string | null;
+  unityVersionWarning?: string;
+  packageInstalled: boolean;
+  /** Line to add to Packages/manifest.json when the package is missing. */
+  manifestLine?: string;
+}
+
+export interface ExportAnalysis {
+  report: CompatibilityReport;
+  /** Versus the last export of this screen; `null` when there is none. */
+  diff: BundleDiff | null;
+  /** Present when a Unity project folder was sent. */
+  unity: UnityFacts | null;
+}
+
+export interface ExportResult extends UnityFacts {
+  /** Paths relative to the Unity project. */
+  written: string[];
+  report: CompatibilityReport;
+  diff: BundleDiff | null;
+}
+
+export interface ExportRecord {
+  id: string;
+  screenId: string;
+  target: string;
+  unityProjectPath: string;
+  outputFolder: string;
+  documentRevision: number;
+  written: string[];
+  createdAt: string;
+}
+
+export interface InstallPackageResult {
+  installed: true;
+  /** Manifest backup relative to the Unity project; `null` when nothing had to change. */
+  backupPath: string | null;
+}

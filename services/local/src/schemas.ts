@@ -22,6 +22,19 @@ export const createVersionBody = z.strictObject({
   note: z.string().max(5000).optional(),
 });
 
+// Exports
+export const analyzeExportBody = z.strictObject({
+  screenId: nonEmpty(200),
+  /** When given, the response also says whether this Unity project has the Forma package. */
+  unityProjectPath: nonEmpty(1000).optional(),
+});
+export const exportUguiBody = z.strictObject({
+  screenId: nonEmpty(200),
+  unityProjectPath: nonEmpty(1000),
+  outputFolder: z.string().max(500).optional(),
+});
+export const installPackageBody = z.strictObject({ unityProjectPath: nonEmpty(1000) });
+
 // Sources
 export const sourceKindSchema = z.enum(['document', 'reference']);
 export const scopeLevelSchema = z.enum(['project', 'screen', 'node', 'proposal']);

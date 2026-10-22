@@ -3,7 +3,11 @@ import { abortedError, errorFromResponse, serviceUnavailableError } from './erro
 import type {
   EditPreview,
   EditRequest,
+  ExportAnalysis,
+  ExportRecord,
+  ExportResult,
   ImpactReport,
+  InstallPackageResult,
   NewSource,
   Project,
   Proposal,
@@ -35,13 +39,15 @@ export function createApiClient(options: ApiClientOptions = {}) {
     signal?: AbortSignal | undefined;
     /** AI routes: their error envelope is mapped to AI-specific errors. */
     ai?: boolean;
+    /** Export routes: their 400/422 messages are Spanish and shown as is. */
+    export?: boolean;
   }
 
   async function send(
     method: string,
     path: string,
     body?: unknown,
-    { signal, ai }: RequestOptions = {},
+    { signal, ai, export: isExport }: RequestOptions = {},
   ): Promise<Response> {
     let response: Response;
     try {
@@ -58,7 +64,7 @@ export function createApiClient(options: ApiClientOptions = {}) {
     }
     if (!response.ok) {
       const parsed: unknown = await response.json().catch(() => null);
-      throw errorFromResponse(response.status, parsed, { ai: ai === true });
+      throw errorFromResponse(response.status, parsed, { ai: ai === true, export: isExport === true });
     }
     return response;
   }
@@ -138,6 +144,27 @@ export function createApiClient(options: ApiClientOptions = {}) {
         `${proposal(id, proposalId)}/adopt`,
         baseRevision === undefined ? undefined : { baseRevision },
       ),
+
+    analyzeExport: (id: string, screenId: string, unityProjectPath?: string) =>
+      request<ExportAnalysis>(
+        'POST',
+        `${project(id)}/exports/ugui/analyze`,
+        { screenId, ...(unityProjectPath ? { unityProjectPath } : {}) },
+        { export: true },
+      ),
+    exportUgui: (
+      id: string,
+      body: { screenId: string; unityProjectPath: string; outputFolder?: string },
+    ) => request<ExportResult>('POST', `${project(id)}/exports/ugui`, body, { export: true }),
+    installFormaPackage: (id: string, unityProjectPath: string) =>
+      request<InstallPackageResult>(
+        'POST',
+        `${project(id)}/exports/ugui/install-package`,
+        { unityProjectPath },
+        { export: true },
+      ),
+    listExports: async (id: string): Promise<ExportRecord[]> =>
+      (await request<{ exports: ExportRecord[] }>('GET', `${project(id)}/exports`)).exports,
 
     extractRequirements: (id: string, sourceIds?: string[], signal?: AbortSignal) =>
       request<RequirementsResult>(

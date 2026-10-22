@@ -1,6 +1,13 @@
 import { afterEach } from 'vitest';
 import type { FastifyInstance } from 'fastify';
-import { createEmptyDocument, createScreen, type FormaDocument } from '@forma/design-core';
+import {
+  applyBatch,
+  createEmptyDocument,
+  createScreen,
+  createSequentialIdGenerator,
+  type FormaDocument,
+} from '@forma/design-core';
+import { insertEntry } from '@forma/library';
 import { buildServer, type ServerOptions } from './server';
 
 /**
@@ -37,6 +44,21 @@ export function sampleDocument(name = 'Sample'): FormaDocument {
     ...doc,
     screens: [createScreen({ name: 'Main', id: 'screen_main', rootId: 'node_root' })],
   };
+}
+
+/** `sampleDocument` with the tabbed inventory pattern inserted under the root of `Main`. */
+export function inventoryDocument(): FormaDocument {
+  const doc = sampleDocument();
+  const inserted = insertEntry(doc, {
+    entryId: 'inventory.tabs',
+    screenId: 'screen_main',
+    parentId: 'node_root',
+    idGen: createSequentialIdGenerator(),
+  });
+  if (!inserted.ok) throw new Error(inserted.error.message);
+  const applied = applyBatch(doc, inserted.value);
+  if (!applied.ok) throw new Error(applied.error.message);
+  return applied.doc;
 }
 
 /** Parses cleanly but breaks tree invariants (root points to a missing node). */

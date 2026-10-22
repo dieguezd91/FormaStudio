@@ -6,9 +6,11 @@ import { DEFAULT_AI_LIMITS } from './ai/limits';
 import { DB_FILE_NAME } from './config';
 import { registerCors } from './cors';
 import { openRepository } from './db';
+import { forwardSlashes, resolveUnityPackagePath } from './export/unity-project';
 import { registerErrorHandling } from './errors';
 import { registerAiRoutes } from './routes/ai';
 import { registerDocumentRoutes } from './routes/document';
+import { registerExportRoutes } from './routes/exports';
 import { registerProjectRoutes } from './routes/projects';
 import { registerProposalRoutes } from './routes/proposals';
 import { registerRequirementRoutes } from './routes/requirements';
@@ -35,6 +37,8 @@ export interface ServerOptions {
   maxAiBlobBytes?: number;
   /** Longest text source sent to the model, in characters. */
   maxAiTextChars?: number;
+  /** Unity package folder; defaults to `FORMA_UNITY_PACKAGE_PATH` or the repo's `unity/com.forma.studio`. */
+  unityPackagePath?: string;
 }
 
 function resolveDbPath({ dbPath, dataDir }: ServerOptions): string {
@@ -71,6 +75,9 @@ export function buildServer(options: ServerOptions = {}): FastifyInstance {
     repo,
     maxSourceBytes,
     ai: options.ai ?? null,
+    unityPackagePath: options.unityPackagePath
+      ? forwardSlashes(options.unityPackagePath)
+      : resolveUnityPackagePath(),
     aiLimits: {
       ...DEFAULT_AI_LIMITS,
       ...(options.maxAiBlobBytes === undefined ? {} : { maxBlobBytes: options.maxAiBlobBytes }),
@@ -85,6 +92,7 @@ export function buildServer(options: ServerOptions = {}): FastifyInstance {
   registerRequirementRoutes(app, context);
   registerProposalRoutes(app, context);
   registerAiRoutes(app, context);
+  registerExportRoutes(app, context);
 
   return app;
 }

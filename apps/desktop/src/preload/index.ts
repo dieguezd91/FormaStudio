@@ -1,6 +1,8 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 
-// Stub: the typed IPC surface between renderer and main will be exposed here.
+// The whole surface between renderer and main: no generic channel access.
 contextBridge.exposeInMainWorld('forma', {
   platform: process.platform,
+  /** Native folder picker; resolves to the chosen path, or `null` if cancelled. */
+  pickFolder: (): Promise<string | null> => ipcRenderer.invoke('forma:pick-folder'),
 });
